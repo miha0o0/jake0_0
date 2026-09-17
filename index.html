@@ -6,16 +6,17 @@
     <title>X 위키 :: Personal Homepage</title>
     <style>
         :root {
-            --bg-color: #120a0e;
-            --card-bg: #1c1017;
-            --header-bg: #2a1220;
-            --border-color: #4a2338;
-            --text-color: #f3e5ec;
-            --text-sub: #b898a8;
-            --accent-pink: #d81b60;
-            --light-pink: #f48fb1;
-            --badge-private: #8b0032;
-            --wiki-table-header: #22101a;
+            --bg-color: #fcf8fa;
+            --card-bg: #ffffff;
+            --header-bg: #fff0f5;
+            --border-color: #f4c2d7;
+            --text-color: #4a3b42;
+            --text-sub: #9e7b8c;
+            --accent-pink: #ff85a2;
+            --light-pink: #ffb3c6;
+            --soft-pink-bg: #fff5f8;
+            --badge-private: #d81b60;
+            --wiki-table-header: #ffeef4;
         }
 
         * {
@@ -41,7 +42,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            box-shadow: 0 4px 20px rgba(244, 194, 215, 0.3);
         }
 
         .site-header {
@@ -55,7 +56,7 @@
 
         .site-header h1 {
             font-size: 1.5rem;
-            color: #ffffff;
+            color: var(--accent-pink);
             letter-spacing: 1px;
         }
 
@@ -67,13 +68,13 @@
         .nav-tabs {
             display: flex;
             gap: 8px;
-            background: #150b11;
+            background: #ffffff;
             padding: 10px 20px;
             border-bottom: 1px solid var(--border-color);
         }
 
         .tab-btn {
-            background: transparent;
+            background: #ffffff;
             color: var(--text-sub);
             border: 1px solid var(--border-color);
             padding: 5px 14px;
@@ -102,7 +103,7 @@
         }
 
         .character-card {
-            background: #140b10;
+            background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
@@ -113,14 +114,14 @@
 
         .character-card:hover {
             transform: translateY(-3px);
-            border-color: var(--light-pink);
+            border-color: var(--accent-pink);
         }
 
         .character-card img {
             width: 100%;
             height: 200px;
             object-fit: cover;
-            background: #000;
+            background: #fff;
         }
 
         .character-card .card-info {
@@ -130,7 +131,7 @@
         .character-card .card-title {
             font-size: 1rem;
             font-weight: bold;
-            color: #fff;
+            color: var(--text-color);
         }
 
         .character-card .card-sub {
@@ -141,16 +142,17 @@
         .spoiler-tag {
             display: inline-block;
             font-size: 0.65rem;
-            background: #772244;
-            color: #ffb3d9;
+            background: #ffdde6;
+            color: var(--accent-pink);
             padding: 2px 5px;
             border-radius: 3px;
             margin-top: 4px;
+            font-weight: bold;
         }
 
         /* 위키 본문 */
         .wiki-category {
-            background: #140b10;
+            background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
             border-radius: 4px;
             padding: 6px 12px;
@@ -160,11 +162,13 @@
         }
 
         .wiki-category .tag-item {
-            color: #fff;
-            background: var(--header-bg);
+            color: var(--accent-pink);
+            background: #ffffff;
+            border: 1px solid var(--border-color);
             padding: 2px 6px;
             border-radius: 3px;
             margin-left: 4px;
+            font-weight: bold;
         }
 
         .wiki-title-area {
@@ -178,7 +182,7 @@
 
         .wiki-title-area h2 {
             font-size: 1.8rem;
-            color: #ffffff;
+            color: var(--text-color);
             display: flex;
             align-items: baseline;
             gap: 8px;
@@ -196,9 +200,9 @@
         }
 
         .action-btn {
-            background: #2a1220;
+            background: #ffffff;
             border: 1px solid var(--border-color);
-            color: #fff;
+            color: var(--text-color);
             padding: 3px 8px;
             font-size: 0.75rem;
             border-radius: 3px;
@@ -208,10 +212,11 @@
 
         .action-btn.private {
             background: var(--badge-private);
+            color: #ffffff;
         }
 
         .bgm-box {
-            background: #140b10;
+            background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
             border-radius: 6px;
             padding: 10px;
@@ -246,14 +251,14 @@
         .infobox {
             width: 100%;
             border-collapse: collapse;
-            background: #140b10;
-            border: 2px solid var(--header-bg);
+            background: #ffffff;
+            border: 2px solid var(--border-color);
             font-size: 0.85rem;
         }
 
         .infobox-title {
             background: var(--header-bg);
-            color: #fff;
+            color: var(--accent-pink);
             font-size: 1rem;
             font-weight: bold;
             text-align: center;
@@ -263,7 +268,7 @@
 
         .infobox-img-td {
             text-align: center;
-            background: #000;
+            background: var(--soft-pink-bg);
             padding: 8px;
         }
 
@@ -276,7 +281,7 @@
 
         .infobox th {
             background: var(--wiki-table-header);
-            color: #fff;
+            color: var(--text-color);
             width: 32%;
             padding: 6px 8px;
             border: 1px solid var(--border-color);
@@ -286,11 +291,11 @@
         .infobox td {
             padding: 6px 8px;
             border: 1px solid var(--border-color);
-            background: #1c1017;
+            background: #ffffff;
         }
 
         .toc-box {
-            background: #140b10;
+            background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
             display: inline-block;
             min-width: 220px;
@@ -302,7 +307,7 @@
         .toc-title {
             font-weight: bold;
             font-size: 0.88rem;
-            color: #fff;
+            color: var(--accent-pink);
             margin-bottom: 4px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 3px;
@@ -318,9 +323,13 @@
             text-decoration: none;
         }
 
+        .toc-list a:hover {
+            color: var(--accent-pink);
+        }
+
         .section-header {
             font-size: 1.2rem;
-            color: #ffffff;
+            color: var(--text-color);
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 3px;
             margin: 20px 0 10px 0;
@@ -329,24 +338,32 @@
             align-items: center;
         }
 
+        .section-header span.edit-btn {
+            font-size: 0.7rem;
+            color: var(--accent-pink);
+            cursor: pointer;
+        }
+
         .quote-table {
             width: 100%;
             border-collapse: collapse;
             margin: 8px 0 14px 0;
             border: 1px solid var(--border-color);
-            background: #140b10;
+            background: var(--soft-pink-bg);
         }
 
         .quote-table td {
             padding: 10px 14px;
             text-align: center;
             font-style: italic;
+            color: var(--accent-pink);
+            font-weight: bold;
         }
 
         /* 포스타입 스타일 요소 */
         .postype-box {
-            background: #25121e;
-            border: 1px solid var(--accent-pink);
+            background: var(--soft-pink-bg);
+            border: 1px solid var(--border-color);
             border-left: 4px solid var(--accent-pink);
             padding: 12px 16px;
             border-radius: 4px;
@@ -365,8 +382,8 @@
 
         /* 스포 방지 가림막 박스 */
         .spoiler-section-blur {
-            background: #210a14;
-            border: 1px dashed #772244;
+            background: var(--soft-pink-bg);
+            border: 1px dashed var(--accent-pink);
             padding: 15px;
             border-radius: 6px;
             text-align: center;
@@ -375,7 +392,7 @@
         }
 
         .spoiler-section-blur span {
-            color: #ffb3d9;
+            color: var(--accent-pink);
             font-weight: bold;
             font-size: 0.85rem;
         }
@@ -402,16 +419,16 @@
         .form-group label {
             font-size: 0.82rem;
             font-weight: bold;
-            color: #fff;
+            color: var(--text-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
         .form-group input, .form-group textarea, .form-group select {
-            background: #140b10;
+            background: #ffffff;
             border: 1px solid var(--border-color);
-            color: #fff;
+            color: var(--text-color);
             padding: 7px 9px;
             border-radius: 4px;
             font-size: 0.85rem;
@@ -423,7 +440,7 @@
         }
 
         .file-input-wrapper {
-            background: #140b10;
+            background: var(--soft-pink-bg);
             border: 1px dashed var(--border-color);
             padding: 10px;
             text-align: center;
@@ -454,11 +471,11 @@
         }
 
         .move-btn {
-            background: #3a182b;
+            background: var(--light-pink);
         }
 
         .remove-field-btn {
-            background: #551d2a;
+            background: #e57373;
         }
 
         .submit-btn, .login-btn, .modal-btn {
@@ -485,7 +502,7 @@
         .login-box {
             max-width: 320px;
             margin: 0 auto;
-            background: #140b10;
+            background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
             padding: 18px;
             border-radius: 6px;
@@ -497,7 +514,7 @@
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(74, 59, 66, 0.4);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -505,17 +522,18 @@
         }
 
         .modal-box {
-            background: #1c1017;
+            background: #ffffff;
             border: 1px solid var(--border-color);
             padding: 22px;
             border-radius: 6px;
             max-width: 380px;
             width: 90%;
             text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
 
         .modal-box h3 {
-            color: #ffb3d9;
+            color: var(--accent-pink);
             margin-bottom: 8px;
         }
 
@@ -533,7 +551,7 @@
         }
 
         .modal-btn.cancel {
-            background: #331a26;
+            background: var(--text-sub);
             color: #fff;
         }
     </style>
@@ -557,7 +575,7 @@
     <div class="content-container">
         <!-- 1. 로비 화면 -->
         <div id="lobby-tab">
-            <h2 style="margin-bottom: 10px; color:#fff; font-size: 1.3rem;">캐릭터 목록</h2>
+            <h2 style="margin-bottom: 10px; color:var(--text-color); font-size: 1.3rem;">캐릭터 목록</h2>
             <div class="lobby-grid" id="lobby-list"></div>
         </div>
 
@@ -582,7 +600,7 @@
 
             <div id="public-view">
                 <div class="bgm-box" id="bgm-box" style="display:none;">
-                    <div style="font-size:0.82rem; font-weight:bold; color:#fff;">캐릭터 테마곡 (BGM)</div>
+                    <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">캐릭터 테마곡 (BGM)</div>
                     <div class="iframe-container">
                         <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </div>
@@ -680,7 +698,7 @@
             </div>
 
             <div id="edit-form-container" style="display:none;">
-                <h2 style="margin-bottom:12px; color:#fff; font-size:1.2rem;">X 위키 프로필 작성 및 업로드</h2>
+                <h2 style="margin-bottom:12px; color:var(--text-color); font-size:1.2rem;">X 위키 프로필 작성 및 업로드</h2>
                 <form onsubmit="saveWiki(event)">
                     <div class="form-grid">
                         <div class="form-group">
@@ -873,7 +891,6 @@
         }
     }
 
-    // 순서 변경 및 항목 제어
     function moveUp(btn) {
         const row = btn.parentElement;
         if (row.previousElementSibling) {
@@ -1032,7 +1049,6 @@
         }
     }
 
-    // 섹션 생성 헬퍼 함수
     function buildSectionHtml(text, boxText, imgUrl, spoilerOk) {
         let contentHtml = '';
         if (boxText) {
@@ -1086,7 +1102,6 @@
         document.getElementById('out-card-title').textContent = char.name + (char.sub ? ` (${char.sub})` : '');
         document.getElementById('out-img').src = char.img;
 
-        // 동적 인포박스
         const infoboxWrapper = document.getElementById('wrapper-infobox');
         const tbody = document.getElementById('custom-fields-tbody');
         tbody.innerHTML = '';
@@ -1109,7 +1124,6 @@
 
         document.getElementById('out-quote').textContent = char.quote || '“ ... ”';
 
-        // 각각의 본문 섹션 생성
         document.getElementById('wrapper-overview').innerHTML = buildSectionHtml(char.overview, char.boxOverview, char.imgSec1, char.spOverview);
         document.getElementById('wrapper-feature').innerHTML = buildSectionHtml(char.feature, char.boxFeature, char.imgSec2, char.spFeature);
         document.getElementById('wrapper-story').innerHTML = buildSectionHtml(char.story, char.boxStory, char.imgSec3, char.spStory);
@@ -1153,4 +1167,4 @@
 </script>
 
 </body>
-    </html>
+                                    </html>
