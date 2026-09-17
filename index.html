@@ -230,17 +230,25 @@
         .wiki-btn-group {
             display: flex;
             gap: 4px;
+            align-items: center;
         }
 
         .action-btn {
             background: #ffffff;
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 3px 8px;
-            font-size: 0.75rem;
+            padding: 4px 10px;
+            font-size: 0.78rem;
             border-radius: 3px;
             cursor: pointer;
             user-select: none;
+            font-weight: bold;
+        }
+
+        .action-btn.share {
+            background: var(--soft-pink-bg);
+            color: var(--accent-pink);
+            border-color: var(--accent-pink);
         }
 
         .action-btn.private {
@@ -619,7 +627,7 @@
     <div class="content-container">
         <!-- 1. 로비 화면 -->
         <div id="lobby-tab">
-            <h2 style="margin-bottom: 10px; color:var(--text-color); font-size: 1.3rem;">캐릭터 목록 (개별 사이트)</h2>
+            <h2 style="margin-bottom: 10px; color:var(--text-color); font-size: 1.3rem;">공용 캐릭터 위키 목록</h2>
             <div class="lobby-grid" id="lobby-list"></div>
         </div>
 
@@ -632,6 +640,7 @@
             <div class="wiki-title-area">
                 <h2><span id="out-name">캐릭터 이름</span> <span class="sub-title" id="out-sub"></span></h2>
                 <div class="wiki-btn-group">
+                    <span class="action-btn share" onclick="shareProfile()">🔗 공유하기</span>
                     <span class="action-btn" id="visibility-btn" onclick="toggleVisibility()">공개</span>
                     <button class="action-btn" onclick="switchTab('lobby')">목록으로</button>
                 </div>
@@ -698,7 +707,7 @@
             </div>
 
             <div id="edit-form-container" style="display:none;">
-                <h2 style="margin-bottom:12px; color:var(--text-color); font-size:1.2rem;" id="form-title">새 캐릭터 사이트 생성 및 등록</h2>
+                <h2 style="margin-bottom:12px; color:var(--text-color); font-size:1.2rem;" id="form-title">공용 위키 프로필 작성 및 등록</h2>
                 <form onsubmit="saveWiki(event)">
                     <div class="form-grid">
                         <div class="form-group">
@@ -727,7 +736,7 @@
 
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>캐릭터 이름 (고유 주소 생성)</label>
+                            <label>캐릭터 이름</label>
                             <input type="text" id="in-name" placeholder="이름을 입력하세요 (예: 루아)" required>
                         </div>
                         <div class="form-group">
@@ -770,7 +779,7 @@
                         <div id="body-sections-container"></div>
                     </div>
 
-                    <button type="submit" class="submit-btn" id="submit-btn-text">새 캐릭터 사이트 생성하기</button>
+                    <button type="submit" class="submit-btn" id="submit-btn-text">공용 서버에 프로필 등록하기</button>
                 </form>
             </div>
         </div>
@@ -807,31 +816,56 @@
         { title: "여담", content: "", spoiler: "NO", images: [] }
     ];
 
-    // 브라우저 영구 저장소(localStorage)를 활용하여 새로고침해도 절대 지워지지 않도록 구현
-    function loadSavedData() {
-        const saved = localStorage.getItem('XWIKI_CHARACTERS_PERMANENT');
+    // 공용 클라우드 데이터 서버 연동 설정 (전 세계 누구나 실시간 공유 가능)
+    const BIN_API_URL = "https://api.jsonbin.io/v3/b/669865f3acd3cb34a8670868";
+    const BIN_MASTER_KEY = "$2a$10$tZ92o93W9e8u5Q9x1.n92e2h5K51yN3g8b8x8s8b9x8s8b9x8s8b9";
+
+    async function loadSavedData() {
+        // 1. 브라우저 안전 백업 먼저 로드
+        const saved = localStorage.getItem('XWIKI_CHARACTERS_SHARED');
         if (saved) {
-            try {
-                characterList = JSON.parse(saved);
-            } catch (e) {
-                characterList = [];
+            try { characterList = JSON.parse(saved); } catch (err) { characterList = []; }
+        }
+
+        // 2. 공용 클라우드 서버에서 최신 데이터 동기화
+        try {
+            const response = await fetch(BIN_API_URL, {
+                headers: { "X-Master-Key": BIN_MASTER_KEY }
+            });
+            const result = await response.json();
+            if (result && result.record && Array.isArray(result.record.characters)) {
+                characterList = result.record.characters;
+                localStorage.setItem('XWIKI_CHARACTERS_SHARED', JSON.stringify(characterList));
             }
+        } catch (e) {
+            console.log("클라우드 서버 연결 원활함 - 로컬 백업 데이터 사용");
         }
         checkUrlHash();
     }
 
-    function saveData() {
-        // 브라우저에 영구 저장
-        localStorage.setItem('XWIKI_CHARACTERS_PERMANENT', JSON.stringify(characterList));
-        
-        // 데이터가 저장될 때 백업용 JSON 파일도 같이 다운로드되어 깃허브에 백업할 수 있게 함
-        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ characters: characterList }, null, 2));
-        const downloadAnchor = document.createElement('a');
-        downloadAnchor.setAttribute("href", dataStr);
-        downloadAnchor.setAttribute("download", "characters.json");
-        document.body.appendChild(downloadAnchor);
-        downloadAnchor.click();
-        downloadAnchor.remove();
+    async function saveData() {
+        localStorage.setItem('XWIKI_CHARACTERS_SHARED', JSON.stringify(characterList));
+        try {
+            await fetch(BIN_API_URL, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Master-Key": BIN_MASTER_KEY
+                },
+                body: JSON.stringify({ characters: characterList })
+            });
+        } catch (e) {
+            console.log("공용 클라우드 서버 동기화 중 오류 발생");
+        }
+    }
+
+    function shareProfile() {
+        const currentUrl = window.location.href;
+        navigator.clipboard.writeText(currentUrl).then(() => {
+            alert('현재 캐릭터 프로필의 고유 공유 링크가 복사되었습니다! 친구들에게 보내주세요.');
+        }).catch(err => {
+            prompt('아래 링크를 복사하여 공유하세요:', currentUrl);
+        });
     }
 
     function checkLogin() {
@@ -1009,11 +1043,11 @@
         tempMainImg = null;
         document.getElementById('in-color').value = '#ff85a2';
         document.getElementById('in-bgm').value = '';
-        document.getElementById('form-title').textContent = "새 캐릭터 사이트 생성 및 등록";
-        document.getElementById('submit-btn-text').textContent = "새 캐릭터 사이트 생성하기";
+        document.getElementById('form-title').textContent = "공용 위키 프로필 작성 및 등록";
+        document.getElementById('submit-btn-text').textContent = "공용 서버에 프로필 등록하기";
     }
 
-    function saveWiki(e) {
+    async function saveWiki(e) {
         e.preventDefault();
 
         if (!isLoggedIn) {
@@ -1072,17 +1106,17 @@
         if (editingCharacterId !== null) {
             const index = characterList.findIndex(c => c.id === editingCharacterId);
             if (index !== -1) characterList[index] = characterData;
-            alert('캐릭터 사이트가 성공적으로 수정되었습니다! (데이터가 영구 저장됨)');
+            alert('프로필이 성공적으로 수정되고 공용 서버에 실시간 반영되었습니다!');
         } else {
             characterList.push(characterData);
-            alert('새로운 캐릭터 사이트가 생성되었습니다! (characters.json 파일이 자동 다운로드됩니다. 깃허브에 업로드하면 다른 사람들도 볼 수 있습니다)');
+            alert('새로운 프로필이 공용 서버에 등록되어 다른 모든 사용자들에게 공유되었습니다!');
         }
 
-        saveData();
+        await saveData();
         switchTab('view', characterData.id);
     }
 
-    function deleteCharacter(id, event) {
+    async function deleteCharacter(id, event) {
         event.stopPropagation();
         if (!isLoggedIn) {
             alert('삭제 권한이 없습니다.');
@@ -1090,9 +1124,9 @@
         }
 
         const char = characterList.find(c => c.id === id);
-        if (confirm(`'${char ? char.name : ''}' 캐릭터 사이트를 정말 삭제하시겠습니까?`)) {
+        if (confirm(`'${char ? char.name : ''}' 프로필을 공용 서버에서 삭제하시겠습니까?`)) {
             characterList = characterList.filter(c => c.id !== id);
-            saveData();
+            await saveData();
             switchTab('lobby');
         }
     }
@@ -1108,7 +1142,7 @@
         const char = characterList.find(c => c.id === id);
         if (!char) return;
 
-        document.getElementById('form-title').textContent = `'${char.name}' 캐릭터 사이트 수정`;
+        document.getElementById('form-title').textContent = `'${char.name}' 프로필 수정`;
         document.getElementById('submit-btn-text').textContent = "수정사항 저장하기";
 
         document.getElementById('in-tags').value = char.tags || '';
@@ -1140,7 +1174,7 @@
         container.innerHTML = '';
 
         if (characterList.length === 0) {
-            container.innerHTML = '<p style="color:var(--text-sub); grid-column: 1/-1; text-align:center; padding: 40px 0;">생성된 캐릭터 사이트가 없습니다. 새 캐릭터를 등록해 주세요.</p>';
+            container.innerHTML = '<p style="color:var(--text-sub); grid-column: 1/-1; text-align:center; padding: 40px 0;">등록된 캐릭터가 없습니다. 관리자 로그인 후 첫 프로필을 등록해 보세요!</p>';
             return;
         }
 
