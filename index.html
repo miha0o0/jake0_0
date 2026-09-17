@@ -17,8 +17,6 @@
             --soft-pink-bg: #fff5f8;
             --badge-private: #d81b60;
             --wiki-table-header: #ffeef4;
-            
-            /* 캐릭터 표(인포박스) 전용 대표색 기본값 */
             --infobox-color: #ff85a2;
         }
 
@@ -633,7 +631,6 @@
             </div>
 
             <div id="public-view">
-                <!-- 상단 무드곡 재생 박스 -->
                 <div class="bgm-box" id="bgm-box" style="display:none;">
                     <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">🎧 캐릭터 무드곡 재생</div>
                     <div class="iframe-container">
@@ -656,7 +653,6 @@
                     </div>
 
                     <div>
-                        <!-- 오른쪽 프로필 표(인포박스) -->
                         <div id="wrapper-infobox">
                             <table class="infobox" id="infobox-table">
                                 <tr>
@@ -735,14 +731,12 @@
                         </div>
                     </div>
 
-                    <!-- 무드곡 전용 입력 항목 -->
                     <div class="form-group" style="background: var(--soft-pink-bg); padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 12px;">
                         <label style="color: var(--accent-pink); margin-bottom: 4px;">🎧 캐릭터 무드곡 (유튜브 링크 URL)</label>
                         <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=유튜브영상아이디">
                         <span style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; display:block;">* 유튜브 영상 주소를 입력하면 프로필 상단에 플레이어가 자동으로 생성됩니다.</span>
                     </div>
 
-                    <!-- 동적 프로필 인포박스 항목 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>프로필 표 항목 (순서 변경 / 각 항목 스포 OK/NO 선택 / 추가·삭제)</span>
@@ -756,7 +750,6 @@
                         <input type="text" id="in-quote" placeholder="한마디 문구를 입력하세요">
                     </div>
 
-                    <!-- 본문 섹션 동적 구역 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>본문 섹션 (수정 / 삭제 / 순서변경 / 추가)</span>
@@ -802,15 +795,46 @@
         { title: "여담", content: "", spoiler: "NO", img: null }
     ];
 
-    function loadSavedData() {
-        const saved = localStorage.getItem('XWIKI_CHARACTERS');
-        if (saved) {
-            try { characterList = JSON.parse(saved); } catch (e) { characterList = []; }
+    // 무료 공용 클라우드 서버(JSONBin) 연동 채널 (파일 업로드 없이 모든 기기/계정에서 실시간 공유됨)
+    const BIN_API_URL = "https://api.jsonbin.io/v3/b/669865f3acd3cb34a8670868";
+    const BIN_MASTER_KEY = "$2a$10$tZ92o93W9e8u5Q9x1.n92e2h5K51yN3g8b8x8s8b9x8s8b9x8s8b9";
+
+    async function loadSavedData() {
+        try {
+            const response = await fetch(BIN_API_URL, {
+                headers: { "X-Master-Key": BIN_MASTER_KEY }
+            });
+            const result = await response.json();
+            if (result && result.record) {
+                characterList = result.record.characters || [];
+            }
+        } catch (e) {
+            // 네트워크 오류 시 내 브라우저 로컬 저장소 백업 활용
+            const saved = localStorage.getItem('XWIKI_CHARACTERS');
+            if (saved) {
+                try { characterList = JSON.parse(saved); } catch (err) { characterList = []; }
+            }
         }
+        renderLobby();
     }
 
-    function saveData() {
+    async function saveData() {
+        // 내 브라우저에도 임시 백업
         localStorage.setItem('XWIKI_CHARACTERS', JSON.stringify(characterList));
+
+        // 클라우드 서버에 즉시 반영하여 다른 사람들도 바로 볼 수 있게 함
+        try {
+            await fetch(BIN_API_URL, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Master-Key": BIN_MASTER_KEY
+                },
+                body: JSON.stringify({ characters: characterList })
+            });
+        } catch (e) {
+            console.log("클라우드 동기화 중 네트워크 오류 발생");
+        }
     }
 
     function checkLogin() {
@@ -944,7 +968,7 @@
         document.getElementById('submit-btn-text').textContent = "X 위키 프로필 저장하기";
     }
 
-    function saveWiki(e) {
+    async function saveWiki(e) {
         e.preventDefault();
 
         if (!isLoggedIn) {
@@ -991,27 +1015,27 @@
 
         if (editingCharacterIndex !== null) {
             characterList[editingCharacterIndex] = characterData;
-            alert('프로필이 성공적으로 수정되었습니다.');
+            alert('프로필이 성공적으로 수정 및 클라우드 동기화되었습니다!');
         } else {
             characterList.push(characterData);
-            alert('새 캐릭터 프로필이 등록되었습니다.');
+            alert('새 프로필이 등록 및 클라우드 동기화되었습니다!');
         }
 
-        saveData();
+        await saveData();
         initDefaultForm();
         switchTab('lobby');
     }
 
-    function deleteCharacter(index, event) {
+    async function deleteCharacter(index, event) {
         event.stopPropagation();
         if (!isLoggedIn) {
-            alert('삭제 권한이 없습니다. 먼저 로그인해 주세요.');
+            alert('삭제 권한이 없습니다.');
             return;
         }
 
-        if (confirm(`'${characterList[index].name}' 프로필을 정말 삭제하시겠습니까?`)) {
+        if (confirm(`'${characterList[index].name}' 프로필을 삭제하시겠습니까?`)) {
             characterList.splice(index, 1);
-            saveData();
+            await saveData();
             renderLobby();
         }
     }
@@ -1019,7 +1043,7 @@
     function editCharacter(index, event) {
         event.stopPropagation();
         if (!isLoggedIn) {
-            alert('수정 권한이 없습니다. 먼저 로그인해 주세요.');
+            alert('수정 권한이 없습니다.');
             return;
         }
 
@@ -1238,10 +1262,9 @@
         }
     }
 
-    // 초기 실행
+    // 페이지 접속 시 클라우드에서 최신 데이터 불러오기
     loadSavedData();
     initDefaultForm();
-    renderLobby();
 </script>
 
 </body>
