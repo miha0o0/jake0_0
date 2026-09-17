@@ -17,6 +17,8 @@
             --soft-pink-bg: #fff5f8;
             --badge-private: #d81b60;
             --wiki-table-header: #ffeef4;
+            
+            /* 캐릭터 표(인포박스) 전용 대표색 기본값 */
             --infobox-color: #ff85a2;
         }
 
@@ -421,135 +423,6 @@
             display: none;
         }
 
-        /* AI 대화창 스타일 */
-        .ai-chat-box {
-            margin-top: 25px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 15px;
-            background: var(--soft-pink-bg);
-        }
-
-        .ai-chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 8px;
-            margin-bottom: 12px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .ai-chat-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--accent-pink);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .chat-selector {
-            padding: 4px 8px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            background: #ffffff;
-            font-size: 0.85rem;
-            color: var(--text-color);
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .chat-history {
-            height: 280px;
-            overflow-y: auto;
-            background: #ffffff;
-            border: 1px solid var(--border-color);
-            padding: 12px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            font-size: 0.88rem;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .chat-row {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        .chat-row.user {
-            align-items: flex-end;
-        }
-
-        .chat-row.ai {
-            align-items: flex-start;
-        }
-
-        .chat-msg {
-            max-width: 80%;
-            padding: 8px 12px;
-            border-radius: 6px;
-            word-break: break-word;
-            line-height: 1.4;
-        }
-
-        .chat-row.user .chat-msg {
-            background: var(--accent-pink);
-            color: #ffffff;
-        }
-
-        .chat-row.ai .chat-msg {
-            background: var(--soft-pink-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-        }
-
-        .msg-controls {
-            display: flex;
-            gap: 6px;
-            font-size: 0.7rem;
-        }
-
-        .msg-controls button {
-            background: transparent;
-            border: none;
-            color: var(--text-sub);
-            cursor: pointer;
-            padding: 0 2px;
-        }
-
-        .msg-controls button:hover {
-            color: var(--accent-pink);
-            text-decoration: underline;
-        }
-
-        .chat-input-group {
-            display: flex;
-            gap: 6px;
-        }
-
-        .chat-input-group input {
-            flex: 1;
-            padding: 8px 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            font-size: 0.85rem;
-        }
-
-        .chat-input-group button {
-            background: var(--accent-pink);
-            color: #ffffff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
         /* 폼 입력 디자인 */
         .form-grid {
             display: grid;
@@ -740,7 +613,7 @@
             <div class="lobby-grid" id="lobby-list"></div>
         </div>
 
-        <!-- 2. 프로필 상세보기 (진짜 AI 대화방 포함) -->
+        <!-- 2. 세부 프로필 보기 화면 -->
         <div id="view-tab" style="display:none;">
             <div class="wiki-category">
                 분류 : <span id="out-tags"><span class="tag-item">자캐</span></span>
@@ -760,8 +633,9 @@
             </div>
 
             <div id="public-view">
+                <!-- 상단 무드곡 재생 박스 -->
                 <div class="bgm-box" id="bgm-box" style="display:none;">
-                    <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">캐릭터 무드곡</div>
+                    <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">🎧 캐릭터 무드곡 재생</div>
                     <div class="iframe-container">
                         <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </div>
@@ -782,6 +656,7 @@
                     </div>
 
                     <div>
+                        <!-- 오른쪽 프로필 표(인포박스) -->
                         <div id="wrapper-infobox">
                             <table class="infobox" id="infobox-table">
                                 <tr>
@@ -797,27 +672,10 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- 진짜 AI 대화방 -->
-                <div class="ai-chat-box">
-                    <div class="ai-chat-header">
-                        <div class="ai-chat-title">💬 
-                            <select id="chat-character-select" class="chat-selector" onchange="changeChatCharacter(this.value)">
-                                <!-- 동적으로 채워짐 -->
-                            </select> AI 실시간 대화방
-                        </div>
-                        <button class="action-btn" onclick="clearChatHistory()">대화 비우기</button>
-                    </div>
-                    <div class="chat-history" id="chat-history"></div>
-                    <div class="chat-input-group">
-                        <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." onkeypress="handleChatKeyPress(event)">
-                        <button onclick="sendChatMessage()">전송</button>
-                    </div>
-                </div>
             </div>
         </div>
 
-        <!-- 3. 관리자 작성/편집 탭 -->
+        <!-- 3. 프로필 작성/업로드 화면 -->
         <div id="edit-tab" style="display:none;">
             <div id="login-required" class="login-required-notice">
                 <h2>로그인이 필요합니다</h2>
@@ -870,20 +728,6 @@
                         </div>
                     </div>
 
-                    <!-- 관리자 전용: 진짜 AI 연동 설정 -->
-                    <div style="background:var(--soft-pink-bg); border:1px solid var(--border-color); padding:12px; border-radius:6px; margin-bottom:15px;">
-                        <h3 style="font-size:0.9rem; color:var(--accent-pink); margin-bottom:8px;">🤖 관리자 전용: Google Gemini AI 무료 연동 설정</h3>
-                        <div class="form-group">
-                            <label>Gemini API Key (Google AI Studio에서 무료 발급)</label>
-                            <input type="password" id="in-api-key" placeholder="AIzaSy...">
-                            <span style="font-size:0.7rem; color:var(--text-sub);">* 키를 입력하면 진짜 LLM AI가 실시간으로 캐릭터 성격을 연기하며 대답합니다.</span>
-                        </div>
-                        <div class="form-group">
-                            <label>AI 성격 / 말투 / 행동 지침 (System Prompt)</label>
-                            <textarea id="in-ai-prompt" placeholder="예: 너는 츤데레 성격의 17세 마법사다. 반말을 사용하고 까칠하지만 속은 따뜻하게 대답해라."></textarea>
-                        </div>
-                    </div>
-
                     <div class="form-group">
                         <label>프로필 대표 사진 파일 업로드</label>
                         <div class="file-input-wrapper">
@@ -891,11 +735,14 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>무드곡 유튜브 URL</label>
-                        <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=...">
+                    <!-- 무드곡 전용 입력 항목 -->
+                    <div class="form-group" style="background: var(--soft-pink-bg); padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 12px;">
+                        <label style="color: var(--accent-pink); margin-bottom: 4px;">🎧 캐릭터 무드곡 (유튜브 링크 URL)</label>
+                        <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=유튜브영상아이디">
+                        <span style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; display:block;">* 유튜브 영상 주소를 입력하면 프로필 상단에 플레이어가 자동으로 생성됩니다.</span>
                     </div>
 
+                    <!-- 동적 프로필 인포박스 항목 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>프로필 표 항목 (순서 변경 / 각 항목 스포 OK/NO 선택 / 추가·삭제)</span>
@@ -909,6 +756,7 @@
                         <input type="text" id="in-quote" placeholder="한마디 문구를 입력하세요">
                     </div>
 
+                    <!-- 본문 섹션 동적 구역 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>본문 섹션 (수정 / 삭제 / 순서변경 / 추가)</span>
@@ -943,7 +791,6 @@
     let selectedCharacterIndex = null;
     let editingCharacterIndex = null;
     let tempMainImg = null;
-    let chatHistory = []; 
 
     const ADMIN_PW = "0828";
     const defaultFields = ["본명", "출생", "성별", "신체", "소속", "MBTI", "가족 관계"];
@@ -1092,8 +939,7 @@
         editingCharacterIndex = null;
         tempMainImg = null;
         document.getElementById('in-color').value = '#ff85a2';
-        document.getElementById('in-api-key').value = '';
-        document.getElementById('in-ai-prompt').value = '';
+        document.getElementById('in-bgm').value = '';
         document.getElementById('form-title').textContent = "X 위키 프로필 작성 및 업로드";
         document.getElementById('submit-btn-text').textContent = "X 위키 프로필 저장하기";
     }
@@ -1134,8 +980,6 @@
             sub: document.getElementById('in-sub').value,
             tags: document.getElementById('in-tags').value,
             color: document.getElementById('in-color').value,
-            apiKey: document.getElementById('in-api-key').value,
-            aiPrompt: document.getElementById('in-ai-prompt').value,
             spoilerOk: document.getElementById('in-spoiler-ok').value,
             spoilerMsg: document.getElementById('in-spoiler-msg').value,
             img: tempMainImg || existingImg,
@@ -1187,8 +1031,6 @@
 
         document.getElementById('in-tags').value = char.tags || '';
         document.getElementById('in-color').value = char.color || '#ff85a2';
-        document.getElementById('in-api-key').value = char.apiKey || '';
-        document.getElementById('in-ai-prompt').value = char.aiPrompt || '';
         document.getElementById('in-spoiler-ok').value = char.spoilerOk || 'NO';
         document.getElementById('in-spoiler-msg').value = char.spoilerMsg || '';
         document.getElementById('in-name').value = char.name || '';
@@ -1374,35 +1216,7 @@
             bgmBox.style.display = 'none';
         }
 
-        initChatCharacterSelector();
         switchTab('view');
-    }
-
-    function initChatCharacterSelector() {
-        const selectElem = document.getElementById('chat-character-select');
-        selectElem.innerHTML = '';
-
-        characterList.forEach((c, idx) => {
-            const opt = document.createElement('option');
-            opt.value = idx;
-            opt.textContent = c.name;
-            if (idx === selectedCharacterIndex) opt.selected = true;
-            selectElem.appendChild(opt);
-        });
-
-        resetChatForCurrentCharacter();
-    }
-
-    function changeChatCharacter(index) {
-        selectedCharacterIndex = parseInt(index);
-        const char = characterList[selectedCharacterIndex];
-        showWikiDetails(char);
-    }
-
-    function resetChatForCurrentCharacter() {
-        const char = characterList[selectedCharacterIndex];
-        chatHistory = [{ role: 'model', content: `안녕하세요! 저는 ${char.name}입니다. 무슨 이야기가 하고 싶으신가요?` }];
-        renderChatHistory();
     }
 
     function toggleVisibility() {
@@ -1424,125 +1238,6 @@
         }
     }
 
-    /* 실시간 Gemini AI 연동 및 수정/삭제 기능 */
-    function renderChatHistory() {
-        const container = document.getElementById('chat-history');
-        container.innerHTML = '';
-
-        chatHistory.forEach((item, index) => {
-            const roleClass = item.role === 'user' ? 'user' : 'ai';
-            const row = document.createElement('div');
-            row.className = `chat-row ${roleClass}`;
-
-            const msgDiv = document.createElement('div');
-            msgDiv.className = 'chat-msg';
-            msgDiv.textContent = item.content;
-
-            const controls = document.createElement('div');
-            controls.className = 'msg-controls';
-
-            if (item.role === 'user') {
-                controls.innerHTML = `
-                    <button onclick="editChatMessage(${index})">수정</button>
-                    <button onclick="deleteChatMessage(${index})">삭제</button>
-                `;
-            } else if (index > 0) {
-                controls.innerHTML = `<button onclick="deleteChatMessage(${index})">삭제</button>`;
-            }
-
-            row.appendChild(msgDiv);
-            row.appendChild(controls);
-            container.appendChild(row);
-        });
-
-        container.scrollTop = container.scrollHeight;
-    }
-
-    function handleChatKeyPress(e) {
-        if (e.key === 'Enter') sendChatMessage();
-    }
-
-    async function sendChatMessage() {
-        if (selectedCharacterIndex === null) return;
-        const char = characterList[selectedCharacterIndex];
-        const inputElem = document.getElementById('chat-input');
-        const userText = inputElem.value.trim();
-
-        if (!userText) return;
-
-        chatHistory.push({ role: 'user', content: userText });
-        inputElem.value = '';
-        renderChatHistory();
-
-        chatHistory.push({ role: 'model', content: '실시간 AI가 답변을 생각 중...' });
-        renderChatHistory();
-
-        let aiReply = "";
-
-        if (char.apiKey && char.apiKey.trim() !== '') {
-            // Google Gemini 공식 무료 API 엔드포인트 호출
-            try {
-                let systemInstruction = `너는 자캐 위키의 캐릭터 '${char.name}'이다. 입력된 성격과 지침을 완벽하게 연기하여 캐릭터의 말투로 생동감 있게 답변하라.\n`;
-                if (char.aiPrompt) systemInstruction += `[지침]: ${char.aiPrompt}\n`;
-
-                // 제미나이 멀티턴 대화 포맷 구성
-                const contents = [];
-                chatHistory.slice(0, -1).forEach(msg => {
-                    contents.push({
-                        role: msg.role === 'user' ? 'user' : 'model',
-                        parts: [{ text: msg.content }]
-                    });
-                });
-
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${char.apiKey.trim()}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        system_instruction: { parts: [{ text: systemInstruction }] },
-                        contents: contents
-                    })
-                });
-
-                const data = await response.json();
-                if (data.candidates && data.candidates[0].content) {
-                    aiReply = data.candidates[0].content.parts[0].text;
-                } else if (data.error) {
-                    aiReply = `API 오류: ${data.error.message}`;
-                } else {
-                    aiReply = "응답을 받아오지 못했습니다. API 키를 확인해 주세요.";
-                }
-            } catch (err) {
-                aiReply = "네트워크 통신 중 오류가 발생했습니다.";
-            }
-        } else {
-            // API 키가 없을 때 안내 문구
-            aiReply = `(알림) 관리자가 아직 Google Gemini API Key를 입력하지 않았습니다. 진짜 AI 대화를 원하시면 관리자 탭에서 무료 API 키를 등록해 주세요!`;
-        }
-
-        chatHistory[chatHistory.length - 1].content = aiReply;
-        renderChatHistory();
-    }
-
-    function editChatMessage(index) {
-        const currentMsg = chatHistory[index].content;
-        const newMsg = prompt("메시지를 수정하세요:", currentMsg);
-        if (newMsg !== null && newMsg.trim() !== "") {
-            chatHistory[index].content = newMsg.trim();
-            renderChatHistory();
-        }
-    }
-
-    function deleteChatMessage(index) {
-        chatHistory.splice(index, 1);
-        renderChatHistory();
-    }
-
-    function clearChatHistory() {
-        if (confirm("대화 내역을 모두 초기화하시겠습니까?")) {
-            resetChatForCurrentCharacter();
-        }
-    }
-
     // 초기 실행
     loadSavedData();
     initDefaultForm();
@@ -1550,4 +1245,4 @@
 </script>
 
 </body>
-    </html>
+</html>
