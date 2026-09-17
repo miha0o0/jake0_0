@@ -17,6 +17,9 @@
             --soft-pink-bg: #fff5f8;
             --badge-private: #d81b60;
             --wiki-table-header: #ffeef4;
+            
+            /* 캐릭터 개별 대표색 (기본값) */
+            --char-color: #ff85a2;
         }
 
         * {
@@ -42,7 +45,7 @@
             border: 1px solid var(--border-color);
             border-radius: 8px;
             overflow: hidden;
-            box-shadow: 0 4px 20px rgba(244, 194, 215, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
         }
 
         .site-header {
@@ -97,7 +100,7 @@
         /* 로비 */
         .lobby-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
             gap: 15px;
             margin-top: 15px;
         }
@@ -107,14 +110,16 @@
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
-            cursor: pointer;
             transition: transform 0.2s, border-color 0.2s;
             text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
         .character-card:hover {
             transform: translateY(-3px);
-            border-color: var(--accent-pink);
+            border-color: var(--char-color);
         }
 
         .character-card img {
@@ -122,10 +127,13 @@
             height: 200px;
             object-fit: cover;
             background: #fff;
+            cursor: pointer;
         }
 
         .character-card .card-info {
             padding: 10px;
+            cursor: pointer;
+            flex-grow: 1;
         }
 
         .character-card .card-title {
@@ -139,6 +147,32 @@
             color: var(--text-sub);
         }
 
+        .character-card .card-actions {
+            display: flex;
+            border-top: 1px solid var(--border-color);
+            background: #ffffff;
+        }
+
+        .character-card .card-actions button {
+            flex: 1;
+            padding: 5px;
+            border: none;
+            background: transparent;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            color: var(--text-sub);
+        }
+
+        .character-card .card-actions button:first-child {
+            border-right: 1px solid var(--border-color);
+        }
+
+        .character-card .card-actions button:hover {
+            color: var(--accent-pink);
+            background: var(--soft-pink-bg);
+        }
+
         .spoiler-tag {
             display: inline-block;
             font-size: 0.65rem;
@@ -150,7 +184,7 @@
             font-weight: bold;
         }
 
-        /* 위키 본문 */
+        /* 위키 본문 (대표색 연동) */
         .wiki-category {
             background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
@@ -162,9 +196,9 @@
         }
 
         .wiki-category .tag-item {
-            color: var(--accent-pink);
+            color: var(--char-color);
             background: #ffffff;
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--char-color);
             padding: 2px 6px;
             border-radius: 3px;
             margin-left: 4px;
@@ -175,7 +209,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            border-bottom: 2px solid var(--accent-pink);
+            border-bottom: 2px solid var(--char-color);
             padding-bottom: 6px;
             margin-bottom: 12px;
         }
@@ -252,18 +286,17 @@
             width: 100%;
             border-collapse: collapse;
             background: #ffffff;
-            border: 2px solid var(--border-color);
+            border: 2px solid var(--char-color);
             font-size: 0.85rem;
         }
 
         .infobox-title {
-            background: var(--header-bg);
-            color: var(--accent-pink);
+            background: var(--char-color);
+            color: #ffffff;
             font-size: 1rem;
             font-weight: bold;
             text-align: center;
             padding: 8px;
-            border-bottom: 1px solid var(--border-color);
         }
 
         .infobox-img-td {
@@ -294,6 +327,16 @@
             background: #ffffff;
         }
 
+        .color-badge {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 6px;
+            border: 1px solid #ccc;
+        }
+
         .toc-box {
             background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
@@ -307,7 +350,7 @@
         .toc-title {
             font-weight: bold;
             font-size: 0.88rem;
-            color: var(--accent-pink);
+            color: var(--char-color);
             margin-bottom: 4px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 3px;
@@ -324,24 +367,15 @@
         }
 
         .toc-list a:hover {
-            color: var(--accent-pink);
+            color: var(--char-color);
         }
 
         .section-header {
             font-size: 1.2rem;
             color: var(--text-color);
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--char-color);
             padding-bottom: 3px;
             margin: 20px 0 10px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .section-header span.edit-btn {
-            font-size: 0.7rem;
-            color: var(--accent-pink);
-            cursor: pointer;
         }
 
         .quote-table {
@@ -356,19 +390,8 @@
             padding: 10px 14px;
             text-align: center;
             font-style: italic;
-            color: var(--accent-pink);
+            color: var(--char-color);
             font-weight: bold;
-        }
-
-        /* 포스타입 스타일 요소 */
-        .postype-box {
-            background: var(--soft-pink-bg);
-            border: 1px solid var(--border-color);
-            border-left: 4px solid var(--accent-pink);
-            padding: 12px 16px;
-            border-radius: 4px;
-            margin: 10px 0;
-            font-size: 0.9rem;
         }
 
         .section-image {
@@ -380,10 +403,9 @@
             border: 1px solid var(--border-color);
         }
 
-        /* 스포 방지 가림막 박스 */
         .spoiler-section-blur {
             background: var(--soft-pink-bg);
-            border: 1px dashed var(--accent-pink);
+            border: 1px dashed var(--char-color);
             padding: 15px;
             border-radius: 6px;
             text-align: center;
@@ -392,7 +414,7 @@
         }
 
         .spoiler-section-blur span {
-            color: var(--accent-pink);
+            color: var(--char-color);
             font-weight: bold;
             font-size: 0.85rem;
         }
@@ -434,6 +456,12 @@
             font-size: 0.85rem;
         }
 
+        .form-group input[type="color"] {
+            height: 38px;
+            padding: 2px 4px;
+            cursor: pointer;
+        }
+
         .form-group textarea {
             min-height: 75px;
             resize: vertical;
@@ -447,7 +475,6 @@
             border-radius: 4px;
         }
 
-        /* 순서 변경 및 동적 입력 행 */
         .dynamic-field-row {
             display: flex;
             gap: 6px;
@@ -457,6 +484,14 @@
 
         .dynamic-field-row input {
             flex: 1;
+        }
+
+        .dynamic-section-box {
+            border: 1px solid var(--border-color);
+            background: var(--soft-pink-bg);
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
         }
 
         .move-btn, .add-field-btn, .remove-field-btn {
@@ -509,7 +544,6 @@
             text-align: left;
         }
 
-        /* 모달 레이어 */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -569,7 +603,7 @@
     <div class="nav-tabs">
         <button class="tab-btn active" onclick="switchTab('lobby')">로비 (목록)</button>
         <button class="tab-btn" id="view-tab-btn" onclick="switchTab('view')" style="display:none;">프로필 보기</button>
-        <button class="tab-btn" onclick="switchTab('edit')">프로필 수정 및 업로드</button>
+        <button class="tab-btn" onclick="switchTab('edit')">프로필 작성 및 업로드</button>
     </div>
 
     <div class="content-container">
@@ -600,7 +634,7 @@
 
             <div id="public-view">
                 <div class="bgm-box" id="bgm-box" style="display:none;">
-                    <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">캐릭터 테마곡 (BGM)</div>
+                    <div style="font-size:0.82rem; font-weight:bold; color:var(--char-color);">캐릭터 테마곡 (BGM)</div>
                     <div class="iframe-container">
                         <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </div>
@@ -610,57 +644,14 @@
                     <div>
                         <div class="toc-box">
                             <div class="toc-title">목차</div>
-                            <ul class="toc-list">
-                                <li><a href="#sec-1">1. 개요</a></li>
-                                <li><a href="#sec-2">2. 특징 및 외모</a></li>
-                                <li><a href="#sec-3">3. 작중 행적</a></li>
-                                <li><a href="#sec-4">4. 대인 관계</a></li>
-                                <li><a href="#sec-5">5. 여담</a></li>
-                            </ul>
+                            <ul class="toc-list" id="out-toc-list"></ul>
                         </div>
 
-                        <!-- 섹션 1: 개요 -->
-                        <div class="section-header" id="sec-1">
-                            1. 개요 <span class="edit-btn">[편집]</span>
-                        </div>
                         <table class="quote-table">
                             <tr><td id="out-quote">“ 대표 한마디 문구 ”</td></tr>
                         </table>
-                        <div id="wrapper-overview">
-                            <p id="out-overview">내용을 작성해 주세요.</p>
-                        </div>
 
-                        <!-- 섹션 2: 특징 -->
-                        <div class="section-header" id="sec-2">
-                            2. 특징 및 외모 <span class="edit-btn">[편집]</span>
-                        </div>
-                        <div id="wrapper-feature">
-                            <p id="out-feature">내용을 작성해 주세요.</p>
-                        </div>
-
-                        <!-- 섹션 3: 행적 -->
-                        <div class="section-header" id="sec-3">
-                            3. 작중 행적 <span class="edit-btn">[편집]</span>
-                        </div>
-                        <div id="wrapper-story">
-                            <p id="out-story">내용을 작성해 주세요.</p>
-                        </div>
-
-                        <!-- 섹션 4: 대인관계 -->
-                        <div class="section-header" id="sec-4">
-                            4. 대인 관계 <span class="edit-btn">[편집]</span>
-                        </div>
-                        <div id="wrapper-relation">
-                            <p id="out-relation">내용을 작성해 주세요.</p>
-                        </div>
-
-                        <!-- 섹션 5: 여담 -->
-                        <div class="section-header" id="sec-5">
-                            5. 여담 <span class="edit-btn">[편집]</span>
-                        </div>
-                        <div id="wrapper-etc">
-                            <p id="out-etc">내용을 작성해 주세요.</p>
-                        </div>
+                        <div id="dynamic-sections-view"></div>
                     </div>
 
                     <div>
@@ -698,7 +689,7 @@
             </div>
 
             <div id="edit-form-container" style="display:none;">
-                <h2 style="margin-bottom:12px; color:var(--text-color); font-size:1.2rem;">X 위키 프로필 작성 및 업로드</h2>
+                <h2 style="margin-bottom:12px; color:var(--text-color); font-size:1.2rem;" id="form-title">X 위키 프로필 작성 및 업로드</h2>
                 <form onsubmit="saveWiki(event)">
                     <div class="form-grid">
                         <div class="form-group">
@@ -706,17 +697,23 @@
                             <input type="text" id="in-tags" placeholder="예: 세계관A, 학생">
                         </div>
                         <div class="form-group">
+                            <label>캐릭터 대표색 (프로필 테마색)</label>
+                            <input type="color" id="in-color" value="#ff85a2">
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
                             <label>전체 프로필 스포 방지 설정</label>
                             <select id="in-spoiler-ok">
                                 <option value="NO">스포 방지 NO (바로 열람)</option>
                                 <option value="OK">스포 방지 OK (진입 시 경고 창)</option>
                             </select>
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>스포 방지 창 안내 문구 (직접 작성)</label>
-                        <input type="text" id="in-spoiler-msg" placeholder="예: 해당 프로필에는 2부 핵심 스포일러가 포함되어 있습니다.">
+                        <div class="form-group">
+                            <label>스포 방지 창 안내 문구</label>
+                            <input type="text" id="in-spoiler-msg" placeholder="예: 핵심 스포일러가 포함되어 있습니다.">
+                        </div>
                     </div>
 
                     <div class="form-grid">
@@ -733,7 +730,7 @@
                     <div class="form-group">
                         <label>프로필 대표 사진 파일 업로드</label>
                         <div class="file-input-wrapper">
-                            <input type="file" id="in-file" accept="image/*" onchange="previewImage(event, 'main')">
+                            <input type="file" id="in-file" accept="image/*" onchange="previewMainImage(event)">
                         </div>
                     </div>
 
@@ -742,7 +739,7 @@
                         <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=...">
                     </div>
 
-                    <!-- 동적 프로필 인포박스 항목 (순서 변경 가능) -->
+                    <!-- 동적 프로필 인포박스 항목 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>프로필 표 항목 (순서 변경 / 항목 추가·삭제)</span>
@@ -762,72 +759,23 @@
                         <input type="text" id="in-quote" placeholder="한마디 문구를 입력하세요">
                     </div>
 
-                    <!-- 섹션별 내용 및 사진/네모박스/스포일러 개별 선택 -->
+                    <!-- 본문 섹션 동적 구역 -->
                     <div class="form-group">
-                        <label>
-                            <span>1. 개요</span>
-                            <select id="in-spoiler-overview"><option value="NO">스포 NO</option><option value="OK">스포 OK</option></select>
+                        <label style="margin-bottom: 5px;">
+                            <span>본문 섹션 (수정 / 삭제 / 순서변경 / 추가)</span>
+                            <button type="button" class="add-field-btn" onclick="addBodySection()">+ 섹션 추가</button>
                         </label>
-                        <textarea id="in-overview" placeholder="개요 내용"></textarea>
-                        <input type="text" id="in-box-overview" placeholder="포스타입 강조 네모박스 텍스트 (선택)">
-                        <div class="file-input-wrapper" style="margin-top:4px;">
-                            <label style="font-size:0.75rem;">섹션 1 사진 추가: </label>
-                            <input type="file" accept="image/*" onchange="previewImage(event, 'sec1')">
-                        </div>
+                        <div id="body-sections-container"></div>
                     </div>
 
-                    <div class="form-group">
-                        <label>
-                            <span>2. 특징 및 외모</span>
-                            <select id="in-spoiler-feature"><option value="NO">스포 NO</option><option value="OK">스포 OK</option></select>
-                        </label>
-                        <textarea id="in-feature" placeholder="특징 내용"></textarea>
-                        <input type="text" id="in-box-feature" placeholder="포스타입 강조 네모박스 텍스트 (선택)">
-                        <div class="file-input-wrapper" style="margin-top:4px;">
-                            <label style="font-size:0.75rem;">섹션 2 사진 추가: </label>
-                            <input type="file" accept="image/*" onchange="previewImage(event, 'sec2')">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>
-                            <span>3. 작중 행적</span>
-                            <select id="in-spoiler-story"><option value="NO">스포 NO</option><option value="OK">스포 OK</option></select>
-                        </label>
-                        <textarea id="in-story" placeholder="행적 내용"></textarea>
-                        <input type="text" id="in-box-story" placeholder="포스타입 강조 네모박스 텍스트 (선택)">
-                        <div class="file-input-wrapper" style="margin-top:4px;">
-                            <label style="font-size:0.75rem;">섹션 3 사진 추가: </label>
-                            <input type="file" accept="image/*" onchange="previewImage(event, 'sec3')">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>
-                            <span>4. 대인 관계</span>
-                            <select id="in-spoiler-relation"><option value="NO">스포 NO</option><option value="OK">스포 OK</option></select>
-                        </label>
-                        <textarea id="in-relation" placeholder="대인관계 내용"></textarea>
-                        <input type="text" id="in-box-relation" placeholder="포스타입 강조 네모박스 텍스트 (선택)">
-                    </div>
-
-                    <div class="form-group">
-                        <label>
-                            <span>5. 여담</span>
-                            <select id="in-spoiler-etc"><option value="NO">스포 NO</option><option value="OK">스포 OK</option></select>
-                        </label>
-                        <textarea id="in-etc" placeholder="여담 내용"></textarea>
-                        <input type="text" id="in-box-etc" placeholder="포스타입 강조 네모박스 텍스트 (선택)">
-                    </div>
-
-                    <button type="submit" class="submit-btn">X 위키 프로필 저장하기</button>
+                    <button type="submit" class="submit-btn" id="submit-btn-text">X 위키 프로필 저장하기</button>
                 </form>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 전체 스포 방지 모달 창 -->
+<!-- 모달 창 -->
 <div class="modal-overlay" id="spoiler-modal" style="display:none;">
     <div class="modal-box">
         <h3>스포일러 주의</h3>
@@ -844,11 +792,29 @@
     let isLoggedIn = false;
     let characterList = [];
     let selectedCharacterIndex = null;
-
-    let imgMain = null, imgSec1 = null, imgSec2 = null, imgSec3 = null;
+    let editingCharacterIndex = null;
+    let tempMainImg = null;
 
     const ADMIN_PW = "0828";
     const defaultFields = ["본명", "출생", "성별", "신체", "소속", "MBTI", "가족 관계"];
+    const defaultBodySections = [
+        { title: "개요", content: "", spoiler: "NO", img: null },
+        { title: "특징 및 외모", content: "", spoiler: "NO", img: null },
+        { title: "작중 행적", content: "", spoiler: "NO", img: null },
+        { title: "대인 관계", content: "", spoiler: "NO", img: null },
+        { title: "여담", content: "", spoiler: "NO", img: null }
+    ];
+
+    function loadSavedData() {
+        const saved = localStorage.getItem('XWIKI_CHARACTERS');
+        if (saved) {
+            try { characterList = JSON.parse(saved); } catch (e) { characterList = []; }
+        }
+    }
+
+    function saveData() {
+        localStorage.setItem('XWIKI_CHARACTERS', JSON.stringify(characterList));
+    }
 
     function checkLogin() {
         const pwInput = document.getElementById('admin-password').value;
@@ -856,8 +822,9 @@
             isLoggedIn = true;
             document.getElementById('login-required').style.display = 'none';
             document.getElementById('edit-form-container').style.display = 'block';
-            document.getElementById('auth-status-text').textContent = '권한: 관리자 (수정 가능)';
+            document.getElementById('auth-status-text').textContent = '권한: 관리자 (수정/삭제 가능)';
             alert('로그인되었습니다.');
+            renderLobby();
         } else {
             alert('비밀번호가 일치하지 않습니다.');
         }
@@ -893,16 +860,12 @@
 
     function moveUp(btn) {
         const row = btn.parentElement;
-        if (row.previousElementSibling) {
-            row.parentElement.insertBefore(row, row.previousElementSibling);
-        }
+        if (row.previousElementSibling) row.parentElement.insertBefore(row, row.previousElementSibling);
     }
 
     function moveDown(btn) {
         const row = btn.parentElement;
-        if (row.nextElementSibling) {
-            row.parentElement.insertBefore(row.nextElementSibling, row);
-        }
+        if (row.nextElementSibling) row.parentElement.insertBefore(row.nextElementSibling, row);
     }
 
     function addCustomField(label = "", value = "") {
@@ -914,33 +877,69 @@
             <button type="button" class="move-btn" onclick="moveDown(this)">▼</button>
             <input type="text" class="field-label" placeholder="항목 이름" value="${label}">
             <input type="text" class="field-value" placeholder="내용" value="${value}">
-            <button type="button" class="remove-field-btn" onclick="removeCustomField(this)">-</button>
+            <button type="button" class="remove-field-btn" onclick="this.parentElement.remove()">-</button>
         `;
         container.appendChild(row);
     }
 
-    function removeCustomField(btn) {
-        btn.parentElement.remove();
+    function addBodySection(title = "", content = "", spoiler = "NO", imgUrl = null) {
+        const container = document.getElementById('body-sections-container');
+        const box = document.createElement('div');
+        box.className = 'dynamic-section-box';
+
+        box.innerHTML = `
+            <div class="dynamic-field-row">
+                <button type="button" class="move-btn" onclick="moveUp(this.parentElement)">▲</button>
+                <button type="button" class="move-btn" onclick="moveDown(this.parentElement)">▼</button>
+                <input type="text" class="section-title-input" placeholder="섹션 제목 (예: 개요)" value="${title}" required>
+                <select class="section-spoiler-input">
+                    <option value="NO" ${spoiler === 'NO' ? 'selected' : ''}>스포 NO</option>
+                    <option value="OK" ${spoiler === 'OK' ? 'selected' : ''}>스포 OK</option>
+                </select>
+                <button type="button" class="remove-field-btn" onclick="this.parentElement.parentElement.remove()">섹션 삭제</button>
+            </div>
+            <textarea class="section-content-input" placeholder="섹션 본문 내용을 입력하세요">${content}</textarea>
+            <div class="file-input-wrapper">
+                <label style="font-size:0.75rem;">섹션 이미지 첨부: </label>
+                <input type="file" accept="image/*" onchange="previewSectionImage(event, this)">
+                <input type="hidden" class="section-img-data" value="${imgUrl || ''}">
+            </div>
+        `;
+        container.appendChild(box);
     }
 
-    function initDefaultCustomFields() {
-        const container = document.getElementById('custom-fields-container');
-        container.innerHTML = '';
-        defaultFields.forEach(f => addCustomField(f, ""));
-    }
-
-    function previewImage(event, target) {
-        const file = event.target.files[0];
+    function previewMainImage(e) {
+        const file = e.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                if (target === 'main') imgMain = e.target.result;
-                if (target === 'sec1') imgSec1 = e.target.result;
-                if (target === 'sec2') imgSec2 = e.target.result;
-                if (target === 'sec3') imgSec3 = e.target.result;
+            reader.onload = function(evt) { tempMainImg = evt.target.result; };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function previewSectionImage(e, inputElem) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                inputElem.nextElementSibling.value = evt.target.result;
             };
             reader.readAsDataURL(file);
         }
+    }
+
+    function initDefaultForm() {
+        document.getElementById('custom-fields-container').innerHTML = '';
+        defaultFields.forEach(f => addCustomField(f, ""));
+
+        document.getElementById('body-sections-container').innerHTML = '';
+        defaultBodySections.forEach(s => addBodySection(s.title, s.content, s.spoiler, s.img));
+
+        editingCharacterIndex = null;
+        tempMainImg = null;
+        document.getElementById('in-color').value = '#ff85a2';
+        document.getElementById('form-title').textContent = "X 위키 프로필 작성 및 업로드";
+        document.getElementById('submit-btn-text').textContent = "X 위키 프로필 저장하기";
     }
 
     function saveWiki(e) {
@@ -956,51 +955,101 @@
         customRows.forEach(row => {
             const label = row.querySelector('.field-label').value.trim();
             const val = row.querySelector('.field-value').value.trim();
-            if (label !== "") {
-                customFields.push({ label: label, value: val || "-" });
+            if (label !== "") customFields.push({ label: label, value: val || "-" });
+        });
+
+        const sectionBoxes = document.querySelectorAll('#body-sections-container .dynamic-section-box');
+        const bodySections = [];
+        sectionBoxes.forEach(box => {
+            const title = box.querySelector('.section-title-input').value.trim();
+            const content = box.querySelector('.section-content-input').value;
+            const spoiler = box.querySelector('.section-spoiler-input').value;
+            const img = box.querySelector('.section-img-data').value;
+            if (title !== "") {
+                bodySections.push({ title: title, content: content, spoiler: spoiler, img: img || null });
             }
         });
+
+        const existingImg = (editingCharacterIndex !== null) ? characterList[editingCharacterIndex].img : 'https://via.placeholder.com/300x380/000000/FFFFFF?text=No+Image';
 
         const characterData = {
             name: document.getElementById('in-name').value,
             sub: document.getElementById('in-sub').value,
             tags: document.getElementById('in-tags').value,
+            color: document.getElementById('in-color').value,
             spoilerOk: document.getElementById('in-spoiler-ok').value,
             spoilerMsg: document.getElementById('in-spoiler-msg').value,
-            img: imgMain || 'https://via.placeholder.com/300x380/000000/FFFFFF?text=No+Image',
+            img: tempMainImg || existingImg,
             bgm: document.getElementById('in-bgm').value,
             customFields: customFields,
             spoilerInfobox: document.getElementById('in-spoiler-infobox').value,
             quote: document.getElementById('in-quote').value,
-            
-            overview: document.getElementById('in-overview').value,
-            boxOverview: document.getElementById('in-box-overview').value,
-            imgSec1: imgSec1,
-            spOverview: document.getElementById('in-spoiler-overview').value,
-
-            feature: document.getElementById('in-feature').value,
-            boxFeature: document.getElementById('in-box-feature').value,
-            imgSec2: imgSec2,
-            spFeature: document.getElementById('in-spoiler-feature').value,
-
-            story: document.getElementById('in-story').value,
-            boxStory: document.getElementById('in-box-story').value,
-            imgSec3: imgSec3,
-            spStory: document.getElementById('in-spoiler-story').value,
-
-            relation: document.getElementById('in-relation').value,
-            boxRelation: document.getElementById('in-box-relation').value,
-            spRelation: document.getElementById('in-spoiler-relation').value,
-
-            etc: document.getElementById('in-etc').value,
-            boxEtc: document.getElementById('in-box-etc').value,
-            spEtc: document.getElementById('in-spoiler-etc').value
+            bodySections: bodySections
         };
 
-        characterList.push(characterData);
-        alert('캐릭터 프로필이 로비에 등록되었습니다.');
-        imgMain = imgSec1 = imgSec2 = imgSec3 = null;
+        if (editingCharacterIndex !== null) {
+            characterList[editingCharacterIndex] = characterData;
+            alert('프로필이 성공적으로 수정되었습니다.');
+        } else {
+            characterList.push(characterData);
+            alert('새 캐릭터 프로필이 등록되었습니다.');
+        }
+
+        saveData();
+        initDefaultForm();
         switchTab('lobby');
+    }
+
+    function deleteCharacter(index, event) {
+        event.stopPropagation();
+        if (!isLoggedIn) {
+            alert('삭제 권한이 없습니다. 먼저 로그인해 주세요.');
+            return;
+        }
+
+        if (confirm(`'${characterList[index].name}' 프로필을 정말 삭제하시겠습니까?`)) {
+            characterList.splice(index, 1);
+            saveData();
+            renderLobby();
+        }
+    }
+
+    function editCharacter(index, event) {
+        event.stopPropagation();
+        if (!isLoggedIn) {
+            alert('수정 권한이 없습니다. 먼저 로그인해 주세요.');
+            return;
+        }
+
+        editingCharacterIndex = index;
+        const char = characterList[index];
+
+        document.getElementById('form-title').textContent = `'${char.name}' 프로필 수정`;
+        document.getElementById('submit-btn-text').textContent = "수정사항 저장하기";
+
+        document.getElementById('in-tags').value = char.tags || '';
+        document.getElementById('in-color').value = char.color || '#ff85a2';
+        document.getElementById('in-spoiler-ok').value = char.spoilerOk || 'NO';
+        document.getElementById('in-spoiler-msg').value = char.spoilerMsg || '';
+        document.getElementById('in-name').value = char.name || '';
+        document.getElementById('in-sub').value = char.sub || '';
+        document.getElementById('in-bgm').value = char.bgm || '';
+        document.getElementById('in-spoiler-infobox').value = char.spoilerInfobox || 'NO';
+        document.getElementById('in-quote').value = char.quote || '';
+
+        const customContainer = document.getElementById('custom-fields-container');
+        customContainer.innerHTML = '';
+        if (char.customFields) {
+            char.customFields.forEach(f => addCustomField(f.label, f.value));
+        }
+
+        const bodyContainer = document.getElementById('body-sections-container');
+        bodyContainer.innerHTML = '';
+        if (char.bodySections) {
+            char.bodySections.forEach(s => addBodySection(s.title, s.content, s.spoiler, s.img));
+        }
+
+        switchTab('edit');
     }
 
     function renderLobby() {
@@ -1015,15 +1064,22 @@
         characterList.forEach((char, index) => {
             const card = document.createElement('div');
             card.className = 'character-card';
-            card.onclick = () => openCharacterProfile(index);
+
+            const actionBtns = isLoggedIn ? `
+                <div class="card-actions">
+                    <button onclick="editCharacter(${index}, event)">수정</button>
+                    <button onclick="deleteCharacter(${index}, event)">삭제</button>
+                </div>
+            ` : '';
 
             card.innerHTML = `
-                <img src="${char.img}" alt="${char.name}">
-                <div class="card-info">
+                <img src="${char.img}" alt="${char.name}" onclick="openCharacterProfile(${index})">
+                <div class="card-info" onclick="openCharacterProfile(${index})">
                     <div class="card-title">${char.name}</div>
                     <div class="card-sub">${char.sub || ''}</div>
                     ${char.spoilerOk === 'OK' ? '<div class="spoiler-tag">스포 방지 OK</div>' : ''}
                 </div>
+                ${actionBtns}
             `;
             container.appendChild(card);
         });
@@ -1049,31 +1105,6 @@
         }
     }
 
-    function buildSectionHtml(text, boxText, imgUrl, spoilerOk) {
-        let contentHtml = '';
-        if (boxText) {
-            contentHtml += `<div class="postype-box">${boxText}</div>`;
-        }
-        if (text) {
-            contentHtml += `<p>${text}</p>`;
-        }
-        if (imgUrl) {
-            contentHtml += `<img src="${imgUrl}" class="section-image" alt="섹션 이미지">`;
-        }
-        if (!contentHtml) contentHtml = '<p>내용이 없습니다.</p>';
-
-        if (spoilerOk === 'OK') {
-            return `
-                <div class="spoiler-section-blur" onclick="revealSpoilerSection(this)">
-                    <span>⚠️ 클릭 시 스포일러 내용을 확인합니다.</span>
-                </div>
-                <div class="spoiler-section-content">${contentHtml}</div>
-            `;
-        } else {
-            return contentHtml;
-        }
-    }
-
     function revealSpoilerSection(element) {
         element.style.display = 'none';
         element.nextElementSibling.style.display = 'block';
@@ -1081,6 +1112,10 @@
 
     function showWikiDetails(char) {
         document.getElementById('view-tab-btn').style.display = 'inline-block';
+
+        // 캐릭터 개별 대표색(테마색) 동적 적용
+        const charColor = char.color || '#ff85a2';
+        document.documentElement.style.setProperty('--char-color', charColor);
 
         const tagsContainer = document.getElementById('out-tags');
         tagsContainer.innerHTML = '';
@@ -1102,9 +1137,16 @@
         document.getElementById('out-card-title').textContent = char.name + (char.sub ? ` (${char.sub})` : '');
         document.getElementById('out-img').src = char.img;
 
+        // 동적 인포박스 + '대표색' 항목 기본 표시
         const infoboxWrapper = document.getElementById('wrapper-infobox');
         const tbody = document.getElementById('custom-fields-tbody');
         tbody.innerHTML = '';
+
+        // 대표색 표시 행
+        const colorTr = document.createElement('tr');
+        colorTr.innerHTML = `<th>대표색</th><td><span class="color-badge" style="background-color:${charColor};"></span>${charColor}</td>`;
+        tbody.appendChild(colorTr);
+
         if (char.customFields && char.customFields.length > 0) {
             char.customFields.forEach(f => {
                 const tr = document.createElement('tr');
@@ -1124,15 +1166,51 @@
 
         document.getElementById('out-quote').textContent = char.quote || '“ ... ”';
 
-        document.getElementById('wrapper-overview').innerHTML = buildSectionHtml(char.overview, char.boxOverview, char.imgSec1, char.spOverview);
-        document.getElementById('wrapper-feature').innerHTML = buildSectionHtml(char.feature, char.boxFeature, char.imgSec2, char.spFeature);
-        document.getElementById('wrapper-story').innerHTML = buildSectionHtml(char.story, char.boxStory, char.imgSec3, char.spStory);
-        document.getElementById('wrapper-relation').innerHTML = buildSectionHtml(char.relation, char.boxRelation, null, char.spRelation);
-        document.getElementById('wrapper-etc').innerHTML = buildSectionHtml(char.etc, char.boxEtc, null, char.spEtc);
+        // 동적 본문 섹션 및 목차 실시간 출력
+        const tocList = document.getElementById('out-toc-list');
+        const sectionsView = document.getElementById('dynamic-sections-view');
+        tocList.innerHTML = '';
+        sectionsView.innerHTML = '';
+
+        if (char.bodySections && char.bodySections.length > 0) {
+            char.bodySections.forEach((sec, idx) => {
+                const secId = `sec-dyn-${idx + 1}`;
+                
+                const li = document.createElement('li');
+                li.innerHTML = `<a href="#${secId}">${idx + 1}. ${sec.title}</a>`;
+                tocList.appendChild(li);
+
+                let innerHtml = '';
+                if (sec.content) innerHtml += `<p>${sec.content}</p>`;
+                if (sec.img) innerHtml += `<img src="${sec.img}" class="section-image" alt="섹션 이미지">`;
+                if (!innerHtml) innerHtml = '<p>내용이 없습니다.</p>';
+
+                let fullSectionHtml = `
+                    <div class="section-header" id="${secId}">
+                        ${idx + 1}. ${sec.title}
+                    </div>
+                `;
+
+                if (sec.spoiler === 'OK') {
+                    fullSectionHtml += `
+                        <div class="spoiler-section-blur" onclick="revealSpoilerSection(this)">
+                            <span>⚠️ 클릭 시 '${sec.title}' 스포일러 내용을 확인합니다.</span>
+                        </div>
+                        <div class="spoiler-section-content">${innerHtml}</div>
+                    `;
+                } else {
+                    fullSectionHtml += innerHtml;
+                }
+
+                const secDiv = document.createElement('div');
+                secDiv.innerHTML = fullSectionHtml;
+                sectionsView.appendChild(secDiv);
+            });
+        }
 
         const bgmBox = document.getElementById('bgm-box');
         const player = document.getElementById('youtube-player');
-        const match = char.bgm.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
+        const match = char.bgm ? char.bgm.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/) : null;
         if (match && match[2].length === 11) {
             player.src = `https://www.youtube.com/embed/${match[2]}?autoplay=1`;
             bgmBox.style.display = 'block';
@@ -1162,9 +1240,11 @@
         }
     }
 
-    initDefaultCustomFields();
+    // 초기 실행
+    loadSavedData();
+    initDefaultForm();
     renderLobby();
 </script>
 
 </body>
-                                    </html>
+</html>
