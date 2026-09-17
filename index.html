@@ -17,8 +17,6 @@
             --soft-pink-bg: #fff5f8;
             --badge-private: #d81b60;
             --wiki-table-header: #ffeef4;
-            
-            /* 캐릭터 표(인포박스) 전용 대표색 기본값 */
             --infobox-color: #ff85a2;
         }
 
@@ -633,7 +631,6 @@
             </div>
 
             <div id="public-view">
-                <!-- 상단 무드곡 재생 박스 -->
                 <div class="bgm-box" id="bgm-box" style="display:none;">
                     <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">🎧 캐릭터 무드곡 재생</div>
                     <div class="iframe-container">
@@ -656,7 +653,6 @@
                     </div>
 
                     <div>
-                        <!-- 오른쪽 프로필 표(인포박스) -->
                         <div id="wrapper-infobox">
                             <table class="infobox" id="infobox-table">
                                 <tr>
@@ -735,14 +731,12 @@
                         </div>
                     </div>
 
-                    <!-- 무드곡 전용 입력 항목 -->
                     <div class="form-group" style="background: var(--soft-pink-bg); padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; margin-bottom: 12px;">
                         <label style="color: var(--accent-pink); margin-bottom: 4px;">🎧 캐릭터 무드곡 (유튜브 링크 URL)</label>
                         <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=유튜브영상아이디">
                         <span style="font-size: 0.75rem; color: var(--text-sub); margin-top: 4px; display:block;">* 유튜브 영상 주소를 입력하면 프로필 상단에 플레이어가 자동으로 생성됩니다.</span>
                     </div>
 
-                    <!-- 동적 프로필 인포박스 항목 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>프로필 표 항목 (순서 변경 / 각 항목 스포 OK/NO 선택 / 추가·삭제)</span>
@@ -756,7 +750,6 @@
                         <input type="text" id="in-quote" placeholder="한마디 문구를 입력하세요">
                     </div>
 
-                    <!-- 본문 섹션 동적 구역 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>본문 섹션 (수정 / 삭제 / 순서변경 / 추가)</span>
@@ -802,15 +795,37 @@
         { title: "여담", content: "", spoiler: "NO", img: null }
     ];
 
-    function loadSavedData() {
-        const saved = localStorage.getItem('XWIKI_CHARACTERS');
-        if (saved) {
-            try { characterList = JSON.parse(saved); } catch (e) { characterList = []; }
+    // 깃허브에 업로드된 characters.json 파일에서 실시간 데이터를 불러옴
+    async function loadSavedData() {
+        try {
+            const response = await fetch('characters.json?t=' + new Date().getTime());
+            if (response.ok) {
+                const data = await response.json();
+                characterList = data.characters || [];
+            }
+        } catch (e) {
+            // 파일이 없거나 오류 시 로컬 데이터 대체
+            const saved = localStorage.getItem('XWIKI_CHARACTERS');
+            if (saved) {
+                try { characterList = JSON.parse(saved); } catch (err) { characterList = []; }
+            }
         }
+        renderLobby();
     }
 
     function saveData() {
         localStorage.setItem('XWIKI_CHARACTERS', JSON.stringify(characterList));
+        
+        // 깃허브 페이지 구조상 브라우저 내에서 바로 깃허브 파일을 수정할 수는 없으므로,
+        // 프로필 등록/수정 시 브라우저에 저장됨과 동시에 다운로드 창을 통해 'characters.json' 파일을 바로 생성해 드립니다.
+        // 이 파일을 깃허브에 덮어쓰기 업로드해주시면 다른 모든 기기/계정에도 즉시 반영됩니다!
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify({ characters: characterList }, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", "characters.json");
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
     }
 
     function checkLogin() {
@@ -991,10 +1006,10 @@
 
         if (editingCharacterIndex !== null) {
             characterList[editingCharacterIndex] = characterData;
-            alert('프로필이 성공적으로 수정되었습니다.');
+            alert('프로필이 수정되었습니다. 다운로드된 "characters.json" 파일을 깃허브에 덮어씌워 주세요!');
         } else {
             characterList.push(characterData);
-            alert('새 캐릭터 프로필이 등록되었습니다.');
+            alert('프로필이 추가되었습니다. 다운로드된 "characters.json" 파일을 깃허브에 덮어씌워 주세요!');
         }
 
         saveData();
@@ -1005,11 +1020,11 @@
     function deleteCharacter(index, event) {
         event.stopPropagation();
         if (!isLoggedIn) {
-            alert('삭제 권한이 없습니다. 먼저 로그인해 주세요.');
+            alert('삭제 권한이 없습니다.');
             return;
         }
 
-        if (confirm(`'${characterList[index].name}' 프로필을 정말 삭제하시겠습니까?`)) {
+        if (confirm(`'${characterList[index].name}' 프로필을 삭제하시겠습니까?`)) {
             characterList.splice(index, 1);
             saveData();
             renderLobby();
@@ -1019,7 +1034,7 @@
     function editCharacter(index, event) {
         event.stopPropagation();
         if (!isLoggedIn) {
-            alert('수정 권한이 없습니다. 먼저 로그인해 주세요.');
+            alert('수정 권한이 없습니다.');
             return;
         }
 
@@ -1241,7 +1256,6 @@
     // 초기 실행
     loadSavedData();
     initDefaultForm();
-    renderLobby();
 </script>
 
 </body>
