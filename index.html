@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X 위키 :: Personal Homepage</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1a1a1a;
+            --header-bg: #000000;
+            --border-color: #333333;
+            --text-color: #e0e0e0;
+            --text-sub: #888888;
+            --link-color: #ffffff;
+            --badge-private: #8b0000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        /* 상단 헤더 */
+        .site-header {
+            background: var(--header-bg);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .site-header h1 {
+            font-size: 1.8rem;
+            color: #ffffff;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+
+        .site-header p {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+        }
+
+        .auth-status {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        /* 탭 버튼 */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            background: #0d0d0d;
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            background: transparent;
+            color: var(--text-sub);
+            border: 1px solid var(--border-color);
+            padding: 6px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #000000;
+            border-color: #ffffff;
+        }
+
+        .content-container {
+            padding: 25px;
+        }
+
+        /* 로비 (캐릭터 카드 목록) */
+        .lobby-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .character-card {
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            text-align: center;
+        }
+
+        .character-card:hover {
+            transform: translateY(-4px);
+            border-color: #ffffff;
+        }
+
+        .character-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #000;
+        }
+
+        .character-card .card-info {
+            padding: 12px;
+        }
+
+        .character-card .card-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .character-card .card-sub {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            margin-top: 2px;
+        }
+
+        .spoiler-tag {
+            display: inline-block;
+            font-size: 0.7rem;
+            background: #772222;
+            color: #ff9999;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 6px;
+        }
+
+        /* 위키 세부 헤더 및 레이아웃 */
+        .category-box {
+            background: #111;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.82rem;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+
+        .category-box span.tag-item {
+            color: #fff;
+            background: #222;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        .wiki-title-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            border-bottom: 2px solid #ffffff;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .wiki-title-area h2 {
+            font-size: 2rem;
+            color: #ffffff;
+        }
+
+        .wiki-title-area span.sub-title {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            margin-left: 8px;
+            font-weight: normal;
+        }
+
+        .action-btn {
+            background: #000;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .action-btn.private {
+            background: var(--badge-private);
+        }
+
+        .bgm-box {
+            background: #000;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 20px;
+        }
+
+        .iframe-container {
+            position: relative;
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%;
+            margin-top: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .iframe-container iframe {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%; border: 0;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-grid { grid-template-columns: 1fr; }
+            .auth-status { position: static; margin-top: 10px; }
+        }
+
+        .infobox {
+            width: 100%;
+            border-collapse: collapse;
+            background: #111;
+            border: 2px solid #000;
+            font-size: 0.85rem;
+        }
+
+        .infobox-title {
+            background: #000;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .infobox-img-td {
+            text-align: center;
+            background: #000;
+            padding: 10px;
+        }
+
+        .infobox-img-td img {
+            width: 100%;
+            max-height: 380px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+
+        .infobox th {
+            background: #222;
+            color: #fff;
+            width: 32%;
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .infobox td {
+            padding: 6px 10px;
+            border: 1px solid var(--border-color);
+            background: #161616;
+        }
+
+        .toc-box {
+            background: #0d0d0d;
+            border: 1px solid var(--border-color);
+            display: inline-block;
+            min-width: 220px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+
+        .toc-title {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #fff;
+            margin-bottom: 6px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+        }
+
+        .toc-list {
+            list-style: none;
+            font-size: 0.88rem;
+        }
+
+        .toc-list a {
+            color: #aaa;
+            text-decoration: none;
+        }
+
+        .section-header {
+            font-size: 1.25rem;
+            color: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 4px;
+            margin: 25px 0 10px 0;
+        }
+
+        .quote-box {
+            border-left: 3px solid #fff;
+            background: #111;
+            padding: 10px 14px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+
+        .spoiler-box {
+            border: 1px solid #772222;
+            background: #1f0a0a;
+            margin-top: 25px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .spoiler-header {
+            background: #3a1111;
+            color: #ff9999;
+            padding: 8px 12px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .spoiler-body {
+            padding: 15px;
+            display: none;
+            background: #121212;
+            font-size: 0.9rem;
+        }
+
+        /* 입력 폼 */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            background: #111;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-size: 0.88rem;
+        }
+
+        .form-group textarea {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .file-input-wrapper {
+            background: #111;
+            border: 1px dashed var(--border-color);
+            padding: 15px;
+            text-align: center;
+            border-radius: 6px;
+        }
+
+        .submit-btn, .login-btn, .modal-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 10px 16px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .submit-btn, .login-btn {
+            width: 100%;
+        }
+
+        .private-notice, .login-required-notice {
+            text-align: center;
+            padding: 80px 20px;
+            color: var(--text-sub);
+        }
+
+        .login-box {
+            max-width: 360px;
+            margin: 0 auto;
+            background: #111;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        /* 스포일러 가림용 모달 레이어 */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: #1a1a1a;
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .modal-box h3 {
+            color: #ff9999;
+            margin-bottom: 10px;
+        }
+
+        .modal-box p {
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            margin-bottom: 20px;
+        }
+
+        .modal-btns {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn.cancel {
+            background: #333;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <header class="site-header">
+        <h1>X WIKI</h1>
+        <p>Personal Character Archive & Profile Base</p>
+        <div class="auth-status" id="auth-status-text">
+            권한: 일반 방문자
+        </div>
+    </header>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab('lobby')">로비 (목록)</button>
+        <button class="tab-btn" id="view-tab-btn" onclick="switchTab('view')" style="display:none;">프로필 보기</button>
+        <button class="tab-btn" onclick="switchTab('edit')">프로필 수정 및 업로드</button>
+    </div>
+
+    <div class="content-container">
+        <!-- 1. 로비 화면 (캐릭터 목록) -->
+        <div id="lobby-tab">
+            <h2 style="margin-bottom: 15px; color:#fff;">캐릭터 목록</h2>
+            <div class="lobby-grid" id="lobby-list">
+                <!-- 등록된 캐릭터 카드가 여기에 생성됩니다 -->
+            </div>
+        </div>
+
+        <!-- 2. 세부 프로필 보기 화면 -->
+        <div id="view-tab" style="display:none;">
+            <div class="category-box">
+                태그 : <span id="out-tags"><span class="tag-item">자캐</span></span>
+            </div>
+
+            <div class="wiki-title-area">
+                <h2><span id="out-name">캐릭터 이름</span> <span class="sub-title" id="out-sub"></span></h2>
+                <div>
+                    <span class="action-btn" id="visibility-btn" onclick="toggleVisibility()">공개</span>
+                    <button class="action-btn" onclick="switchTab('lobby')">목록으로</button>
+                </div>
+            </div>
+
+            <div id="private-view" class="private-notice" style="display:none;">
+                <h2>비공개 프로필입니다.</h2>
+                <p>소유자가 비공개 설정으로 지정하여 열람할 수 없습니다.</p>
+            </div>
+
+            <div id="public-view">
+                <div class="bgm-box" id="bgm-box" style="display:none;">
+                    <div style="font-size:0.85rem; font-weight:bold; color:#fff;">캐릭터 테마곡 (BGM)</div>
+                    <div class="iframe-container">
+                        <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="profile-grid">
+                    <div>
+                        <div class="toc-box">
+                            <div class="toc-title">목차</div>
+                            <ul class="toc-list">
+                                <li><a href="#sec-1">1. 개요</a></li>
+                                <li><a href="#sec-2">2. 특징 및 외모</a></li>
+                                <li><a href="#sec-3">3. 작중 행적</a></li>
+                                <li><a href="#sec-4">4. 대인 관계</a></li>
+                                <li><a href="#sec-5">5. 여담</a></li>
+                            </ul>
+                        </div>
+
+                        <div class="section-header" id="sec-1">1. 개요</div>
+                        <div class="quote-box" id="out-quote">“ 대표 한마디 문구 ”</div>
+                        <p id="out-overview">내용을 작성해 주세요.</p>
+
+                        <div class="section-header" id="sec-2">2. 특징 및 외모</div>
+                        <p id="out-feature">내용을 작성해 주세요.</p>
+
+                        <div class="section-header" id="sec-3">3. 작중 행적</div>
+                        <p id="out-story">내용을 작성해 주세요.</p>
+
+                        <div class="section-header" id="sec-4">4. 대인 관계</div>
+                        <p id="out-relation">내용을 작성해 주세요.</p>
+
+                        <div class="section-header" id="sec-5">5. 여담</div>
+                        <p id="out-etc">내용을 작성해 주세요.</p>
+
+                        <div class="spoiler-box" id="spoiler-box" style="display:none;">
+                            <div class="spoiler-header" onclick="toggleSpoiler()">
+                                <span>주의. 비밀 프로필 스포일러 열기/닫기</span>
+                                <span id="spoiler-icon">▼</span>
+                            </div>
+                            <div class="spoiler-body" id="spoiler-body">
+                                <p id="out-secret"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <table class="infobox">
+                            <tr>
+                                <th colspan="2" class="infobox-title" id="out-card-title">캐릭터 이름</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2" class="infobox-img-td">
+                                    <img id="out-img" src="https://via.placeholder.com/300x380/000000/FFFFFF?text=No+Image" alt="캐릭터 사진">
+                                </td>
+                            </tr>
+                            <tr><th>본명</th><td id="out-fullname">-</td></tr>
+                            <tr><th>출생</th><td id="out-birth">-</td></tr>
+                            <tr><th>성별</th><td id="out-gender">-</td></tr>
+                            <tr><th>신체</th><td id="out-body">-</td></tr>
+                            <tr><th>소속</th><td id="out-affiliation">-</td></tr>
+                            <tr><th>MBTI</th><td id="out-mbti">-</td></tr>
+                            <tr><th>가족 관계</th><td id="out-family">-</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 프로필 작성/업로드 화면 -->
+        <div id="edit-tab" style="display:none;">
+            <div id="login-required" class="login-required-notice">
+                <h2>로그인이 필요합니다</h2>
+                <p style="margin-bottom: 20px;">프로필 작성 및 수정은 관리자 로그인 후 이용할 수 있습니다.</p>
+                <div class="login-box">
+                    <div class="form-group">
+                        <label>비밀번호 입력</label>
+                        <input type="password" id="admin-password" placeholder="비밀번호를 입력하세요">
+                    </div>
+                    <button class="login-btn" onclick="checkLogin()">로그인</button>
+                </div>
+            </div>
+
+            <div id="edit-form-container" style="display:none;">
+                <h2 style="margin-bottom:15px; color:#fff;">X 위키 프로필 작성 및 업로드</h2>
+                <form onsubmit="saveWiki(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>태그 지정 (쉼표로 구분)</label>
+                            <input type="text" id="in-tags" placeholder="예: 세계관A, 학생">
+                        </div>
+                        <div class="form-group">
+                            <label>스포 방지 여부</label>
+                            <select id="in-spoiler-ok">
+                                <option value="NO">스포 방지 NO (바로 열람)</option>
+                                <option value="OK">스포 방지 OK (경고창으로 가리기)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>캐릭터 이름</label>
+                            <input type="text" id="in-name" placeholder="이름을 입력하세요" required>
+                        </div>
+                        <div class="form-group">
+                            <label>소제목/영문이름</label>
+                            <input type="text" id="in-sub" placeholder="영문 이름 또는 소제목">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>프로필 사진 파일 직접 업로드</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="in-file" accept="image/*" onchange="previewImage(event)">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>테마곡 유튜브 URL</label>
+                        <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=...">
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group"><label>본명</label><input type="text" id="in-fullname"></div>
+                        <div class="form-group"><label>출생</label><input type="text" id="in-birth"></div>
+                        <div class="form-group"><label>성별</label><input type="text" id="in-gender"></div>
+                        <div class="form-group"><label>신체</label><input type="text" id="in-body"></div>
+                        <div class="form-group"><label>소속</label><input type="text" id="in-affiliation"></div>
+                        <div class="form-group"><label>MBTI</label><input type="text" id="in-mbti"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>가족 관계</label>
+                        <input type="text" id="in-family">
+                    </div>
+
+                    <div class="form-group">
+                        <label>대표 한마디 / 명대사</label>
+                        <input type="text" id="in-quote" placeholder="한마디 문구를 입력하세요">
+                    </div>
+
+                    <div class="form-group"><label>1. 개요</label><textarea id="in-overview"></textarea></div>
+                    <div class="form-group"><label>2. 특징 및 외모</label><textarea id="in-feature"></textarea></div>
+                    <div class="form-group"><label>3. 작중 행적</label><textarea id="in-story"></textarea></div>
+                    <div class="form-group"><label>4. 대인 관계</label><textarea id="in-relation"></textarea></div>
+                    <div class="form-group"><label>5. 여담</label><textarea id="in-etc"></textarea></div>
+
+                    <div class="form-group">
+                        <label>비밀 프로필 (스포일러)</label>
+                        <textarea id="in-secret"></textarea>
+                    </div>
+
+                    <button type="submit" class="submit-btn">X 위키 프로필 저장하기</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 스포 방지 확인 모달 창 -->
+<div class="modal-overlay" id="spoiler-modal" style="display:none;">
+    <div class="modal-box">
+        <h3>스포일러 주의</h3>
+        <p>해당 캐릭터 프로필에는 스포일러가 포함되어 있습니다.<br>계속해서 프로필을 열람하시겠습니까?</p>
+        <div class="modal-btns">
+            <button class="modal-btn" onclick="confirmSpoilerView(true)">열람하기</button>
+            <button class="modal-btn cancel" onclick="confirmSpoilerView(false)">취소</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let isPublic = true;
+    let isLoggedIn = false;
+    let uploadedImageBase64 = null;
+    let characterList = [];
+    let selectedCharacterIndex = null;
+
+    const ADMIN_PW = "1234";
+
+    function checkLogin() {
+        const pwInput = document.getElementById('admin-password').value;
+        if (pwInput === ADMIN_PW) {
+            isLoggedIn = true;
+            document.getElementById('login-required').style.display = 'none';
+            document.getElementById('edit-form-container').style.display = 'block';
+            document.getElementById('auth-status-text').textContent = '권한: 관리자 (수정 가능)';
+            alert('로그인되었습니다.');
+        } else {
+            alert('비밀번호가 일치하지 않습니다.');
+        }
+    }
+
+    function switchTab(tab) {
+        const lobbyTab = document.getElementById('lobby-tab');
+        const viewTab = document.getElementById('view-tab');
+        const editTab = document.getElementById('edit-tab');
+        const viewTabBtn = document.getElementById('view-tab-btn');
+        const btns = document.querySelectorAll('.nav-tabs .tab-btn');
+
+        btns.forEach(btn => btn.classList.remove('active'));
+
+        if (tab === 'lobby') {
+            lobbyTab.style.display = 'block';
+            viewTab.style.display = 'none';
+            editTab.style.display = 'none';
+            btns[0].classList.add('active');
+            renderLobby();
+        } else if (tab === 'view') {
+            lobbyTab.style.display = 'none';
+            viewTab.style.display = 'block';
+            editTab.style.display = 'none';
+            viewTabBtn.classList.add('active');
+        } else if (tab === 'edit') {
+            lobbyTab.style.display = 'none';
+            viewTab.style.display = 'none';
+            editTab.style.display = 'block';
+            btns[btns.length - 1].classList.add('active');
+        }
+    }
+
+    function previewImage(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImageBase64 = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function saveWiki(e) {
+        e.preventDefault();
+
+        if (!isLoggedIn) {
+            alert('로그인이 필요한 기능입니다.');
+            return;
+        }
+
+        const characterData = {
+            name: document.getElementById('in-name').value,
+            sub: document.getElementById('in-sub').value,
+            tags: document.getElementById('in-tags').value,
+            spoilerOk: document.getElementById('in-spoiler-ok').value,
+            img: uploadedImageBase64 || 'https://via.placeholder.com/300x380/000000/FFFFFF?text=No+Image',
+            bgm: document.getElementById('in-bgm').value,
+            fullname: document.getElementById('in-fullname').value,
+            birth: document.getElementById('in-birth').value,
+            gender: document.getElementById('in-gender').value,
+            body: document.getElementById('in-body').value,
+            affiliation: document.getElementById('in-affiliation').value,
+            mbti: document.getElementById('in-mbti').value,
+            family: document.getElementById('in-family').value,
+            quote: document.getElementById('in-quote').value,
+            overview: document.getElementById('in-overview').value,
+            feature: document.getElementById('in-feature').value,
+            story: document.getElementById('in-story').value,
+            relation: document.getElementById('in-relation').value,
+            etc: document.getElementById('in-etc').value,
+            secret: document.getElementById('in-secret').value
+        };
+
+        characterList.push(characterData);
+        alert('캐릭터 프로필이 로비에 등록되었습니다.');
+        uploadedImageBase64 = null;
+        switchTab('lobby');
+    }
+
+    function renderLobby() {
+        const container = document.getElementById('lobby-list');
+        container.innerHTML = '';
+
+        if (characterList.length === 0) {
+            container.innerHTML = '<p style="color:var(--text-sub); grid-column: 1/-1; text-align:center; padding: 40px 0;">등록된 캐릭터가 없습니다. 프로필을 생성해 주세요.</p>';
+            return;
+        }
+
+        characterList.forEach((char, index) => {
+            const card = document.createElement('div');
+            card.className = 'character-card';
+            card.onclick = () => openCharacterProfile(index);
+
+            card.innerHTML = `
+                <img src="${char.img}" alt="${char.name}">
+                <div class="card-info">
+                    <div class="card-title">${char.name}</div>
+                    <div class="card-sub">${char.sub || ''}</div>
+                    ${char.spoilerOk === 'OK' ? '<div class="spoiler-tag">스포 방지 OK</div>' : ''}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function openCharacterProfile(index) {
+        selectedCharacterIndex = index;
+        const char = characterList[index];
+
+        if (char.spoilerOk === 'OK') {
+            document.getElementById('spoiler-modal').style.display = 'flex';
+        } else {
+            showWikiDetails(char);
+        }
+    }
+
+    function confirmSpoilerView(accept) {
+        document.getElementById('spoiler-modal').style.display = 'none';
+        if (accept && selectedCharacterIndex !== null) {
+            showWikiDetails(characterList[selectedCharacterIndex]);
+        }
+    }
+
+    function showWikiDetails(char) {
+        document.getElementById('view-tab-btn').style.display = 'inline-block';
+
+        // 태그
+        const tagsContainer = document.getElementById('out-tags');
+        tagsContainer.innerHTML = '';
+        if (char.tags && char.tags.trim() !== '') {
+            char.tags.split(',').forEach(t => {
+                if (t.trim() !== '') {
+                    const span = document.createElement('span');
+                    span.className = 'tag-item';
+                    span.textContent = t.trim();
+                    tagsContainer.appendChild(span);
+                }
+            });
+        } else {
+            tagsContainer.innerHTML = '<span class="tag-item">자캐</span>';
+        }
+
+        // 본문 및 프로필 데이터
+        document.getElementById('out-name').textContent = char.name;
+        document.getElementById('out-sub').textContent = char.sub;
+        document.getElementById('out-card-title').textContent = char.name + (char.sub ? ` (${char.sub})` : '');
+        document.getElementById('out-img').src = char.img;
+
+        document.getElementById('out-fullname').textContent = char.fullname || '-';
+        document.getElementById('out-birth').textContent = char.birth || '-';
+        document.getElementById('out-gender').textContent = char.gender || '-';
+        document.getElementById('out-body').textContent = char.body || '-';
+        document.getElementById('out-affiliation').textContent = char.affiliation || '-';
+        document.getElementById('out-mbti').textContent = char.mbti || '-';
+        document.getElementById('out-family').textContent = char.family || '-';
+
+        document.getElementById('out-quote').textContent = char.quote || '“ ... ”';
+        document.getElementById('out-overview').textContent = char.overview || '내용이 없습니다.';
+        document.getElementById('out-feature').textContent = char.feature || '내용이 없습니다.';
+        document.getElementById('out-story').textContent = char.story || '내용이 없습니다.';
+        document.getElementById('out-relation').textContent = char.relation || '내용이 없습니다.';
+        document.getElementById('out-etc').textContent = char.etc || '내용이 없습니다.';
+
+        // 유튜브 BGM
+        const bgmBox = document.getElementById('bgm-box');
+        const player = document.getElementById('youtube-player');
+        const match = char.bgm.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
+        if (match && match[2].length === 11) {
+            player.src = `https://www.youtube.com/embed/${match[2]}?autoplay=1`;
+            bgmBox.style.display = 'block';
+        } else {
+            bgmBox.style.display = 'none';
+        }
+
+        // 비밀 프로필
+        const spoilerBox = document.getElementById('spoiler-box');
+        if (char.secret) {
+            document.getElementById('out-secret').textContent = char.secret;
+            spoilerBox.style.display = 'block';
+        } else {
+            spoilerBox.style.display = 'none';
+        }
+
+        switchTab('view');
+    }
+
+    function toggleVisibility() {
+        isPublic = !isPublic;
+        const btn = document.getElementById('visibility-btn');
+        const publicView = document.getElementById('public-view');
+        const privateView = document.getElementById('private-view');
+
+        if (isPublic) {
+            btn.textContent = '공개';
+            btn.className = 'action-btn';
+            publicView.style.display = 'block';
+            privateView.style.display = 'none';
+        } else {
+            btn.textContent = '비공개';
+            btn.className = 'action-btn private';
+            publicView.style.display = 'none';
+            privateView.style.display = 'block';
+        }
+    }
+
+    function toggleSpoiler() {
+        const body = document.getElementById('spoiler-body');
+        const icon = document.getElementById('spoiler-icon');
+        if (body.style.display === 'block') {
+            body.style.display = 'none';
+            icon.textContent = '▼';
+        } else {
+            body.style.display = 'block';
+            icon.textContent = '▲';
+        }
+    }
+
+    // 초기 화면 로드
+    renderLobby();
+</script>
+
+</body>
+</html>
