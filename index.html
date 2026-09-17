@@ -17,8 +17,6 @@
             --soft-pink-bg: #fff5f8;
             --badge-private: #d81b60;
             --wiki-table-header: #ffeef4;
-            
-            /* 캐릭터 표(인포박스) 전용 대표색 기본값 */
             --infobox-color: #ff85a2;
         }
 
@@ -423,6 +421,83 @@
             display: none;
         }
 
+        /* AI 채팅창 스타일 */
+        .ai-chat-box {
+            margin-top: 25px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 15px;
+            background: var(--soft-pink-bg);
+        }
+
+        .ai-chat-title {
+            font-size: 1rem;
+            font-weight: bold;
+            color: var(--accent-pink);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chat-history {
+            height: 250px;
+            overflow-y: auto;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            font-size: 0.88rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .chat-msg {
+            max-width: 80%;
+            padding: 8px 12px;
+            border-radius: 6px;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .chat-msg.user {
+            align-self: flex-end;
+            background: var(--accent-pink);
+            color: #ffffff;
+        }
+
+        .chat-msg.ai {
+            align-self: flex-start;
+            background: var(--soft-pink-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+        }
+
+        .chat-input-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .chat-input-group input {
+            flex: 1;
+            padding: 8px 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+
+        .chat-input-group button {
+            background: var(--accent-pink);
+            color: #ffffff;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
         /* 폼 입력 디자인 */
         .form-grid {
             display: grid;
@@ -671,10 +746,22 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- AI 채팅 섹션 -->
+                <div class="ai-chat-box">
+                    <div class="ai-chat-title">💬 <span id="chat-char-name">캐릭터</span> AI와 대화하기</div>
+                    <div class="chat-history" id="chat-history">
+                        <div class="chat-msg ai">안녕하세요! 궁금한 점이 있다면 대화를 건네주세요.</div>
+                    </div>
+                    <div class="chat-input-group">
+                        <input type="text" id="chat-input" placeholder="메시지를 입력하세요..." onkeypress="handleChatKeyPress(event)">
+                        <button onclick="sendChatMessage()">전송</button>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- 3. 프로필 작성/업로드 화면 -->
+        <!-- 3. 프로필 작성/업로드 화면 (관리자 전용 AI 설정 포함) -->
         <div id="edit-tab" style="display:none;">
             <div id="login-required" class="login-required-notice">
                 <h2>로그인이 필요합니다</h2>
@@ -727,6 +814,20 @@
                         </div>
                     </div>
 
+                    <!-- 관리자 전용 AI 채팅 설정 구역 -->
+                    <div style="background:var(--soft-pink-bg); border:1px solid var(--border-color); padding:12px; border-radius:6px; margin-bottom:15px;">
+                        <h3 style="font-size:0.9rem; color:var(--accent-pink); margin-bottom:8px;">🤖 관리자 전용: AI 캐릭터 대화 설정</h3>
+                        <div class="form-group">
+                            <label>OpenAI API Key (선택)</label>
+                            <input type="password" id="in-api-key" placeholder="sk-...">
+                            <span style="font-size:0.7rem; color:var(--text-sub);">* API 키를 입력하지 않으면 대화가 진행되지 않습니다.</span>
+                        </div>
+                        <div class="form-group">
+                            <label>AI 페르소나/말투지침 (System Prompt)</label>
+                            <textarea id="in-ai-prompt" placeholder="예: 너는 쿨하고 자상한 성격의 18세 학생이다. 존댓말을 사용하고 가끔 쑥스러워해라."></textarea>
+                        </div>
+                    </div>
+
                     <div class="form-group">
                         <label>프로필 대표 사진 파일 업로드</label>
                         <div class="file-input-wrapper">
@@ -739,7 +840,7 @@
                         <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=...">
                     </div>
 
-                    <!-- 동적 프로필 인포박스 항목 (각 항목별 스포 OK/NO 설정 가능) -->
+                    <!-- 동적 프로필 인포박스 항목 -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
                             <span>프로필 표 항목 (순서 변경 / 각 항목 스포 OK/NO 선택 / 추가·삭제)</span>
@@ -788,6 +889,7 @@
     let selectedCharacterIndex = null;
     let editingCharacterIndex = null;
     let tempMainImg = null;
+    let chatHistoryMessages = [];
 
     const ADMIN_PW = "0828";
     const defaultFields = ["본명", "출생", "성별", "신체", "소속", "MBTI", "가족 관계"];
@@ -862,7 +964,6 @@
         if (row.nextElementSibling) row.parentElement.insertBefore(row.nextElementSibling, row);
     }
 
-    // 프로필 표 항목마다 각각의 스포 OK / NO 선택창 포함
     function addCustomField(label = "", value = "", spoiler = "NO") {
         const container = document.getElementById('custom-fields-container');
         const row = document.createElement('div');
@@ -937,6 +1038,8 @@
         editingCharacterIndex = null;
         tempMainImg = null;
         document.getElementById('in-color').value = '#ff85a2';
+        document.getElementById('in-api-key').value = '';
+        document.getElementById('in-ai-prompt').value = '';
         document.getElementById('form-title').textContent = "X 위키 프로필 작성 및 업로드";
         document.getElementById('submit-btn-text').textContent = "X 위키 프로필 저장하기";
     }
@@ -949,7 +1052,6 @@
             return;
         }
 
-        // 인포박스 각 항목의 라벨, 내용 및 개별 스포일러 설정 저장
         const customRows = document.querySelectorAll('#custom-fields-container .dynamic-field-row');
         const customFields = [];
         customRows.forEach(row => {
@@ -978,6 +1080,8 @@
             sub: document.getElementById('in-sub').value,
             tags: document.getElementById('in-tags').value,
             color: document.getElementById('in-color').value,
+            apiKey: document.getElementById('in-api-key').value,
+            aiPrompt: document.getElementById('in-ai-prompt').value,
             spoilerOk: document.getElementById('in-spoiler-ok').value,
             spoilerMsg: document.getElementById('in-spoiler-msg').value,
             img: tempMainImg || existingImg,
@@ -1029,6 +1133,8 @@
 
         document.getElementById('in-tags').value = char.tags || '';
         document.getElementById('in-color').value = char.color || '#ff85a2';
+        document.getElementById('in-api-key').value = char.apiKey || '';
+        document.getElementById('in-ai-prompt').value = char.aiPrompt || '';
         document.getElementById('in-spoiler-ok').value = char.spoilerOk || 'NO';
         document.getElementById('in-spoiler-msg').value = char.spoilerMsg || '';
         document.getElementById('in-name').value = char.name || '';
@@ -1135,7 +1241,6 @@
         document.getElementById('out-card-title').textContent = char.name + (char.sub ? ` (${char.sub})` : '');
         document.getElementById('out-img').src = char.img;
 
-        // 인포박스 출력 및 각 항목별 스포일러 설정 가림막 적용
         const tbody = document.getElementById('custom-fields-tbody');
         tbody.innerHTML = '';
 
@@ -1164,7 +1269,6 @@
 
         document.getElementById('out-quote').textContent = char.quote || '“ ... ”';
 
-        // 동적 본문 출력
         const tocList = document.getElementById('out-toc-list');
         const sectionsView = document.getElementById('dynamic-sections-view');
         tocList.innerHTML = '';
@@ -1206,7 +1310,6 @@
             });
         }
 
-        // 무드곡 재생 영역
         const bgmBox = document.getElementById('bgm-box');
         const player = document.getElementById('youtube-player');
         const match = char.bgm ? char.bgm.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/) : null;
@@ -1216,6 +1319,11 @@
         } else {
             bgmBox.style.display = 'none';
         }
+
+        // AI 채팅창 내 캐릭터명 설정 및 히스토리 초기화
+        document.getElementById('chat-char-name').textContent = char.name;
+        document.getElementById('chat-history').innerHTML = `<div class="chat-msg ai">안녕하세요! 저는 ${char.name}입니다. 무슨 이야기가 나누고 싶으신가요?</div>`;
+        chatHistoryMessages = [];
 
         switchTab('view');
     }
@@ -1239,6 +1347,84 @@
         }
     }
 
+    // AI 실시간 대화 전송 기능
+    function handleChatKeyPress(e) {
+        if (e.key === 'Enter') sendChatMessage();
+    }
+
+    async function sendChatMessage() {
+        if (selectedCharacterIndex === null) return;
+        const char = characterList[selectedCharacterIndex];
+        const inputElem = document.getElementById('chat-input');
+        const historyContainer = document.getElementById('chat-history');
+        const userText = inputElem.value.trim();
+
+        if (!userText) return;
+
+        if (!char.apiKey) {
+            alert('관리자가 AI API Key를 설정하지 않아 대화를 진행할 수 없습니다.');
+            return;
+        }
+
+        // 사용자 메시지 화면 출력
+        const userMsgDiv = document.createElement('div');
+        userMsgDiv.className = 'chat-msg user';
+        userMsgDiv.textContent = userText;
+        historyContainer.appendChild(userMsgDiv);
+
+        inputElem.value = '';
+        historyContainer.scrollTop = historyContainer.scrollHeight;
+
+        // 로딩 메시지 출력
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'chat-msg ai';
+        loadingDiv.textContent = '생각 중...';
+        historyContainer.appendChild(loadingDiv);
+        historyContainer.scrollTop = historyContainer.scrollHeight;
+
+        // 프롬프트 구성 (캐릭터 정보 기반)
+        let contextInfo = `캐릭터 이름: ${char.name}\n`;
+        if (char.sub) contextInfo += `소제목: ${char.sub}\n`;
+        if (char.quote) contextInfo += `대표 문구: ${char.quote}\n`;
+        if (char.aiPrompt) contextInfo += `성격 및 지침: ${char.aiPrompt}\n`;
+
+        const systemMessage = {
+            role: "system",
+            content: `너는 자채 위키의 캐릭터 '${char.name}' 역할극을 진행하는 AI이다. 입력된 캐릭터 정보와 지침을 바탕으로 캐릭터의 말투와 성격을 연기하여 대답하라.\n\n[캐릭터 정보]\n${contextInfo}`
+        };
+
+        chatHistoryMessages.push({ role: "user", content: userText });
+
+        try {
+            const response = await fetch("https://api.openai.com/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${char.apiKey}`
+                },
+                body: JSON.stringify({
+                    model: "gpt-3.5-turbo",
+                    messages: [systemMessage, ...chatHistoryMessages],
+                    max_tokens: 300
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.choices && data.choices[0]) {
+                const aiReply = data.choices[0].message.content;
+                loadingDiv.textContent = aiReply;
+                chatHistoryMessages.push({ role: "assistant", content: aiReply });
+            } else {
+                loadingDiv.textContent = "AI 대답을 불러오는데 실패했습니다. (API Key 확인 필요)";
+            }
+        } catch (err) {
+            loadingDiv.textContent = "통신 오류가 발생했습니다.";
+        }
+
+        historyContainer.scrollTop = historyContainer.scrollHeight;
+    }
+
     // 초기 실행
     loadSavedData();
     initDefaultForm();
@@ -1246,4 +1432,4 @@
 </script>
 
 </body>
-</html>
+    </html>
