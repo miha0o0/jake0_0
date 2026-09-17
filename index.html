@@ -18,8 +18,8 @@
             --badge-private: #d81b60;
             --wiki-table-header: #ffeef4;
             
-            /* 캐릭터 개별 대표색 (기본값) */
-            --char-color: #ff85a2;
+            /* 캐릭터 표(인포박스) 전용 대표색 기본값 */
+            --infobox-color: #ff85a2;
         }
 
         * {
@@ -119,7 +119,7 @@
 
         .character-card:hover {
             transform: translateY(-3px);
-            border-color: var(--char-color);
+            border-color: var(--accent-pink);
         }
 
         .character-card img {
@@ -184,7 +184,7 @@
             font-weight: bold;
         }
 
-        /* 위키 본문 (대표색 연동) */
+        /* 위키 본문 */
         .wiki-category {
             background: var(--soft-pink-bg);
             border: 1px solid var(--border-color);
@@ -196,9 +196,9 @@
         }
 
         .wiki-category .tag-item {
-            color: var(--char-color);
+            color: var(--accent-pink);
             background: #ffffff;
-            border: 1px solid var(--char-color);
+            border: 1px solid var(--border-color);
             padding: 2px 6px;
             border-radius: 3px;
             margin-left: 4px;
@@ -209,7 +209,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            border-bottom: 2px solid var(--char-color);
+            border-bottom: 2px solid var(--accent-pink);
             padding-bottom: 6px;
             margin-bottom: 12px;
         }
@@ -282,16 +282,17 @@
             .profile-grid { grid-template-columns: 1fr; }
         }
 
+        /* 오른쪽 프로필 표(인포박스) 전용 대표색 스타일 */
         .infobox {
             width: 100%;
             border-collapse: collapse;
             background: #ffffff;
-            border: 2px solid var(--char-color);
+            border: 2px solid var(--infobox-color);
             font-size: 0.85rem;
         }
 
         .infobox-title {
-            background: var(--char-color);
+            background: var(--infobox-color);
             color: #ffffff;
             font-size: 1rem;
             font-weight: bold;
@@ -350,7 +351,7 @@
         .toc-title {
             font-weight: bold;
             font-size: 0.88rem;
-            color: var(--char-color);
+            color: var(--accent-pink);
             margin-bottom: 4px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 3px;
@@ -367,13 +368,13 @@
         }
 
         .toc-list a:hover {
-            color: var(--char-color);
+            color: var(--accent-pink);
         }
 
         .section-header {
             font-size: 1.2rem;
             color: var(--text-color);
-            border-bottom: 1px solid var(--char-color);
+            border-bottom: 1px solid var(--border-color);
             padding-bottom: 3px;
             margin: 20px 0 10px 0;
         }
@@ -390,7 +391,7 @@
             padding: 10px 14px;
             text-align: center;
             font-style: italic;
-            color: var(--char-color);
+            color: var(--accent-pink);
             font-weight: bold;
         }
 
@@ -405,7 +406,7 @@
 
         .spoiler-section-blur {
             background: var(--soft-pink-bg);
-            border: 1px dashed var(--char-color);
+            border: 1px dashed var(--accent-pink);
             padding: 15px;
             border-radius: 6px;
             text-align: center;
@@ -414,7 +415,7 @@
         }
 
         .spoiler-section-blur span {
-            color: var(--char-color);
+            color: var(--accent-pink);
             font-weight: bold;
             font-size: 0.85rem;
         }
@@ -634,7 +635,7 @@
 
             <div id="public-view">
                 <div class="bgm-box" id="bgm-box" style="display:none;">
-                    <div style="font-size:0.82rem; font-weight:bold; color:var(--char-color);">캐릭터 테마곡 (BGM)</div>
+                    <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">캐릭터 테마곡 (BGM)</div>
                     <div class="iframe-container">
                         <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </div>
@@ -655,7 +656,7 @@
                     </div>
 
                     <div>
-                        <!-- 오른쪽 프로필 인포박스 -->
+                        <!-- 오른쪽 프로필 표(인포박스) -->
                         <div id="wrapper-infobox">
                             <table class="infobox" id="infobox-table">
                                 <tr>
@@ -697,7 +698,7 @@
                             <input type="text" id="in-tags" placeholder="예: 세계관A, 학생">
                         </div>
                         <div class="form-group">
-                            <label>캐릭터 대표색 (프로필 테마색)</label>
+                            <label>프로필 네모 박스 대표색 설정</label>
                             <input type="color" id="in-color" value="#ff85a2">
                         </div>
                     </div>
@@ -1113,9 +1114,9 @@
     function showWikiDetails(char) {
         document.getElementById('view-tab-btn').style.display = 'inline-block';
 
-        // 캐릭터 개별 대표색(테마색) 동적 적용
-        const charColor = char.color || '#ff85a2';
-        document.documentElement.style.setProperty('--char-color', charColor);
+        // 오른쪽 프로필 네모 박스(인포박스) 전용 대표색 설정
+        const infoboxColor = char.color || '#ff85a2';
+        document.documentElement.style.setProperty('--infobox-color', infoboxColor);
 
         const tagsContainer = document.getElementById('out-tags');
         tagsContainer.innerHTML = '';
@@ -1137,14 +1138,13 @@
         document.getElementById('out-card-title').textContent = char.name + (char.sub ? ` (${char.sub})` : '');
         document.getElementById('out-img').src = char.img;
 
-        // 동적 인포박스 + '대표색' 항목 기본 표시
+        // 인포박스 전용 대표색 표시 행 추가
         const infoboxWrapper = document.getElementById('wrapper-infobox');
         const tbody = document.getElementById('custom-fields-tbody');
         tbody.innerHTML = '';
 
-        // 대표색 표시 행
         const colorTr = document.createElement('tr');
-        colorTr.innerHTML = `<th>대표색</th><td><span class="color-badge" style="background-color:${charColor};"></span>${charColor}</td>`;
+        colorTr.innerHTML = `<th>대표색</th><td><span class="color-badge" style="background-color:${infoboxColor};"></span>${infoboxColor}</td>`;
         tbody.appendChild(colorTr);
 
         if (char.customFields && char.customFields.length > 0) {
@@ -1166,7 +1166,7 @@
 
         document.getElementById('out-quote').textContent = char.quote || '“ ... ”';
 
-        // 동적 본문 섹션 및 목차 실시간 출력
+        // 동적 본문 출력
         const tocList = document.getElementById('out-toc-list');
         const sectionsView = document.getElementById('dynamic-sections-view');
         tocList.innerHTML = '';
