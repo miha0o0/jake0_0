@@ -282,7 +282,6 @@
             .profile-grid { grid-template-columns: 1fr; }
         }
 
-        /* 오른쪽 프로필 표(인포박스) 전용 대표색 스타일 */
         .infobox {
             width: 100%;
             border-collapse: collapse;
@@ -407,17 +406,17 @@
         .spoiler-section-blur {
             background: var(--soft-pink-bg);
             border: 1px dashed var(--accent-pink);
-            padding: 15px;
-            border-radius: 6px;
+            padding: 6px 10px;
+            border-radius: 4px;
             text-align: center;
             cursor: pointer;
-            margin: 10px 0;
+            margin: 2px 0;
         }
 
         .spoiler-section-blur span {
             color: var(--accent-pink);
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
 
         .spoiler-section-content {
@@ -635,7 +634,7 @@
 
             <div id="public-view">
                 <div class="bgm-box" id="bgm-box" style="display:none;">
-                    <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">캐릭터 테마곡 (BGM)</div>
+                    <div style="font-size:0.82rem; font-weight:bold; color:var(--accent-pink);">캐릭터 무드곡</div>
                     <div class="iframe-container">
                         <iframe id="youtube-player" allow="autoplay; encrypted-media" allowfullscreen></iframe>
                     </div>
@@ -656,7 +655,7 @@
                     </div>
 
                     <div>
-                        <!-- 오른쪽 프로필 표(인포박스) -->
+                        <!-- 프로필 표(인포박스) -->
                         <div id="wrapper-infobox">
                             <table class="infobox" id="infobox-table">
                                 <tr>
@@ -736,21 +735,15 @@
                     </div>
 
                     <div class="form-group">
-                        <label>테마곡 유튜브 URL</label>
+                        <label>무드곡 유튜브 URL</label>
                         <input type="text" id="in-bgm" placeholder="https://www.youtube.com/watch?v=...">
                     </div>
 
-                    <!-- 동적 프로필 인포박스 항목 -->
+                    <!-- 동적 프로필 인포박스 항목 (각 항목별 스포 OK/NO 설정 가능) -->
                     <div class="form-group">
                         <label style="margin-bottom: 5px;">
-                            <span>프로필 표 항목 (순서 변경 / 항목 추가·삭제)</span>
-                            <div style="display:flex; gap:6px;">
-                                <select id="in-spoiler-infobox" style="padding:2px 6px;">
-                                    <option value="NO">스포 NO</option>
-                                    <option value="OK">스포 OK</option>
-                                </select>
-                                <button type="button" class="add-field-btn" onclick="addCustomField()">+ 항목 추가</button>
-                            </div>
+                            <span>프로필 표 항목 (순서 변경 / 각 항목 스포 OK/NO 선택 / 추가·삭제)</span>
+                            <button type="button" class="add-field-btn" onclick="addCustomField()">+ 항목 추가</button>
                         </label>
                         <div id="custom-fields-container"></div>
                     </div>
@@ -869,7 +862,8 @@
         if (row.nextElementSibling) row.parentElement.insertBefore(row.nextElementSibling, row);
     }
 
-    function addCustomField(label = "", value = "") {
+    // 프로필 표 항목마다 각각의 스포 OK / NO 선택창 포함
+    function addCustomField(label = "", value = "", spoiler = "NO") {
         const container = document.getElementById('custom-fields-container');
         const row = document.createElement('div');
         row.className = 'dynamic-field-row';
@@ -878,6 +872,10 @@
             <button type="button" class="move-btn" onclick="moveDown(this)">▼</button>
             <input type="text" class="field-label" placeholder="항목 이름" value="${label}">
             <input type="text" class="field-value" placeholder="내용" value="${value}">
+            <select class="field-spoiler" style="padding:2px 4px; font-size:0.75rem;">
+                <option value="NO" ${spoiler === 'NO' ? 'selected' : ''}>스포 NO</option>
+                <option value="OK" ${spoiler === 'OK' ? 'selected' : ''}>스포 OK</option>
+            </select>
             <button type="button" class="remove-field-btn" onclick="this.parentElement.remove()">-</button>
         `;
         container.appendChild(row);
@@ -931,7 +929,7 @@
 
     function initDefaultForm() {
         document.getElementById('custom-fields-container').innerHTML = '';
-        defaultFields.forEach(f => addCustomField(f, ""));
+        defaultFields.forEach(f => addCustomField(f, "", "NO"));
 
         document.getElementById('body-sections-container').innerHTML = '';
         defaultBodySections.forEach(s => addBodySection(s.title, s.content, s.spoiler, s.img));
@@ -951,12 +949,14 @@
             return;
         }
 
+        // 인포박스 각 항목의 라벨, 내용 및 개별 스포일러 설정 저장
         const customRows = document.querySelectorAll('#custom-fields-container .dynamic-field-row');
         const customFields = [];
         customRows.forEach(row => {
             const label = row.querySelector('.field-label').value.trim();
             const val = row.querySelector('.field-value').value.trim();
-            if (label !== "") customFields.push({ label: label, value: val || "-" });
+            const spoiler = row.querySelector('.field-spoiler').value;
+            if (label !== "") customFields.push({ label: label, value: val || "-", spoiler: spoiler });
         });
 
         const sectionBoxes = document.querySelectorAll('#body-sections-container .dynamic-section-box');
@@ -983,7 +983,6 @@
             img: tempMainImg || existingImg,
             bgm: document.getElementById('in-bgm').value,
             customFields: customFields,
-            spoilerInfobox: document.getElementById('in-spoiler-infobox').value,
             quote: document.getElementById('in-quote').value,
             bodySections: bodySections
         };
@@ -1035,13 +1034,12 @@
         document.getElementById('in-name').value = char.name || '';
         document.getElementById('in-sub').value = char.sub || '';
         document.getElementById('in-bgm').value = char.bgm || '';
-        document.getElementById('in-spoiler-infobox').value = char.spoilerInfobox || 'NO';
         document.getElementById('in-quote').value = char.quote || '';
 
         const customContainer = document.getElementById('custom-fields-container');
         customContainer.innerHTML = '';
         if (char.customFields) {
-            char.customFields.forEach(f => addCustomField(f.label, f.value));
+            char.customFields.forEach(f => addCustomField(f.label, f.value, f.spoiler || "NO"));
         }
 
         const bodyContainer = document.getElementById('body-sections-container');
@@ -1114,7 +1112,6 @@
     function showWikiDetails(char) {
         document.getElementById('view-tab-btn').style.display = 'inline-block';
 
-        // 오른쪽 프로필 네모 박스(인포박스) 전용 대표색 설정
         const infoboxColor = char.color || '#ff85a2';
         document.documentElement.style.setProperty('--infobox-color', infoboxColor);
 
@@ -1138,8 +1135,7 @@
         document.getElementById('out-card-title').textContent = char.name + (char.sub ? ` (${char.sub})` : '');
         document.getElementById('out-img').src = char.img;
 
-        // 인포박스 전용 대표색 표시 행 추가
-        const infoboxWrapper = document.getElementById('wrapper-infobox');
+        // 인포박스 출력 및 각 항목별 스포일러 설정 가림막 적용
         const tbody = document.getElementById('custom-fields-tbody');
         tbody.innerHTML = '';
 
@@ -1150,18 +1146,20 @@
         if (char.customFields && char.customFields.length > 0) {
             char.customFields.forEach(f => {
                 const tr = document.createElement('tr');
-                tr.innerHTML = `<th>${f.label}</th><td>${f.value}</td>`;
+                let cellContent = f.value;
+
+                if (f.spoiler === 'OK') {
+                    cellContent = `
+                        <div class="spoiler-section-blur" onclick="revealSpoilerSection(this)">
+                            <span>⚠️ 스포일러 보기</span>
+                        </div>
+                        <div class="spoiler-section-content">${f.value}</div>
+                    `;
+                }
+
+                tr.innerHTML = `<th>${f.label}</th><td>${cellContent}</td>`;
                 tbody.appendChild(tr);
             });
-        }
-
-        if (char.spoilerInfobox === 'OK') {
-            infoboxWrapper.innerHTML = `
-                <div class="spoiler-section-blur" onclick="revealSpoilerSection(this)">
-                    <span>⚠️ 프로필 표 스포일러 보기</span>
-                </div>
-                <div class="spoiler-section-content">${infoboxWrapper.innerHTML}</div>
-            `;
         }
 
         document.getElementById('out-quote').textContent = char.quote || '“ ... ”';
@@ -1208,6 +1206,7 @@
             });
         }
 
+        // 무드곡 재생 영역
         const bgmBox = document.getElementById('bgm-box');
         const player = document.getElementById('youtube-player');
         const match = char.bgm ? char.bgm.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/) : null;
